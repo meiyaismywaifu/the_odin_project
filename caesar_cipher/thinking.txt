@@ -1,0 +1,45 @@
+"Implement a caesar cipher that takes in a string and the shift factor and then outputs the modified string:"
+  > caesar_cipher("What a string!", 5)
+  => "Bmfy f xywnsl!"
+- You will need to remember how to convert a string into a number.
+- Don’t forget to wrap from z to a.
+- Don’t forget to keep the same case."
+
+--- --- ---
+
+alphabet reference array
+
+def caesar_cipher(string, integer)
+	if integer != integer
+		return error message to ask for integer
+		
+	ciphered_string = ""
+	
+	loop through string
+		if character is an alphabet
+			shift, push to ciphered_string
+		else
+			push character as is to ciphered_string
+			
+	return ciphered_string	
+	
+run until exit:
+	once: prompt/description
+	string: user input string
+	shift: user input integer
+	call caesar_cipher
+	put caesar cipher's result
+	end condition: escape key at this time
+      actually this appears to be difficult so not gonna bother
+
+--- --- ---
+
+number_array = (1..10).to_a
+new_array = []
+for number in number_array do
+  new_array.push number += 1
+end
+
+v =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/
+v =~ /\A[-+]?[0-9]*\Z/
+   [43] apparently tests for whether something is a number. this is a "regexp", "=~" compares regexp to string. i believe [44] is the proper reduction to whether or not an integer is supplied.
