@@ -2,14 +2,21 @@
 input_string = ""; input_integer = 0
 
 def caesar_cipher(string, integer)
-	ciphered_string = ""
+   ciphered_string = ""
    cipher_reference = @alphabet_reference.rotate(integer) # rotate wheel
    string_chars = string.chars # convert to array
 
    string_chars.each do |character|
-      if @alphabet_reference.include?(character)
-          original = @alphabet_reference.index(character)
-          ciphered_string << cipher_reference[original]
+      lowercase = character.downcase
+      
+      if @alphabet_reference.include?(lowercase)
+          original = @alphabet_reference.index(lowercase)
+          if lowercase != character
+            ciphered_string << cipher_reference[original].upcase
+          else
+            ciphered_string << cipher_reference[original]
+          end
+          
       else
           ciphered_string << character
       end
