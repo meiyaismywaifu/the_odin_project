@@ -1,5 +1,4 @@
 @alphabet_reference = ("a".."z").to_a # scope works differently from javascript
-input_string = ""; input_integer = 0
 
 def caesar_cipher(string, integer)
    ciphered_string = ""
@@ -19,9 +18,9 @@ def caesar_cipher(string, integer)
           
       else
           ciphered_string << character
+
       end
     end
-
    puts ciphered_string
 end
    
