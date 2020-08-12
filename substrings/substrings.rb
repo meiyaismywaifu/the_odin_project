@@ -1,12 +1,12 @@
 @dictionary = ["below","down","go","going","horn","how","howdy","it","i","low","own","part","partner","sit"]
 
 def substrings(string, dictionary)
-   output_hash = Hash.new
+   output_hash = Hash.new(0)
    working_array = Array.new
    
    input_chars = string.downcase.chars
    input_chars.each do |character|
-      if character ~= /[[:alpha:]]/
+      if character =~ /[[:alpha:]]/
          working_array << character
       else
          working_array << " "
@@ -14,11 +14,10 @@ def substrings(string, dictionary)
    end
 
    working_string = working_array.join.split
-   output_hash.default = 0
 
    working_string.each do |word|
       dictionary.each do |entry|
-         if entry.include? word
+         if word.include? entry
             output_hash[entry] += 1
          end
       end
@@ -30,7 +29,7 @@ end
 
 puts ">>> This is a substring identifier. >>>"
 loop do
-   puts "String to dissect:"
+   puts "String to identify substrings of:"
    user_input = gets.chomp
    substrings(user_input, @dictionary)
    puts "--- --- ---"

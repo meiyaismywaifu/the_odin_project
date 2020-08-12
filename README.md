@@ -4,4 +4,5 @@
 | Problem       | Prompt                                                       | Solution                                                     |
 | ------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Caesar Cipher | [(prompt)](https://www.theodinproject.com/courses/ruby-programming/lessons/caesar-cipher) | [(solution)](https://github.com/meiyaismywaifu/the_odin_project/blob/master/caesar_cipher/caesar_cipher.rb) |
+| Substrings    | [(prompt)](https://www.theodinproject.com/courses/ruby-programming/lessons/sub-strings) | [(solution)](https://github.com/meiyaismywaifu/the_odin_project/blob/master/substrings/substrings.rb) |
 
