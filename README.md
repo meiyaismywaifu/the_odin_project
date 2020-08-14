@@ -1,8 +1,9 @@
 # the_odin_project
 [The Odin Project](https://www.theodinproject.com/tracks/full-stack-ruby-on-rails)
 
-| Problem       | Prompt                                                       | Solution                                                     |
+| Name          | Prompt                                                       | Solution                                                     |
 | ------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Caesar Cipher | [(prompt)](https://www.theodinproject.com/courses/ruby-programming/lessons/caesar-cipher) | [(solution)](https://github.com/meiyaismywaifu/the_odin_project/blob/master/caesar_cipher/caesar_cipher.rb) |
-| Substrings    | [(prompt)](https://www.theodinproject.com/courses/ruby-programming/lessons/sub-strings) | [(solution)](https://github.com/meiyaismywaifu/the_odin_project/blob/master/substrings/substrings.rb) |
+| Caesar Cipher | [(upstream)](https://github.com/TheOdinProject/curriculum/blob/master/ruby_programming/basic_ruby_projects/caesar_cipher.md) | [(downstream)](https://github.com/meiyaismywaifu/the_odin_project/blob/master/caesar_cipher/caesar_cipher.rb) |
+| Substrings    | [(upstream)](https://github.com/TheOdinProject/curriculum/blob/master/ruby_programming/basic_ruby_projects/sub_strings.md) | [(downstream)](https://github.com/meiyaismywaifu/the_odin_project/blob/master/substrings/substrings.rb) |
+| Stock Picker  | [(upstream)](https://github.com/TheOdinProject/curriculum/blob/master/ruby_programming/basic_ruby_projects/stock_picker.md) | (downstream)                                                 |
 
