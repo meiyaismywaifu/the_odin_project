@@ -1,0 +1,29 @@
+	"Build a method #bubble_sort that takes an array and returns a sorted array. It must use the bubble sort methodology (using #sort would be pretty pointless, wouldn�t it?).
+	> bubble_sort([4,3,78,2,0,2])
+	=> [0,2,2,3,4,78]"
+	
+--- --- ---
+
+bubble sort means compare adjacent indexes, move the larger one to the right, repeat until complete.
+
+index = 0
+array.each_cons(2) do |pair|
+	if pair[1] > pair [0]
+	hmm.. but it wouldn't read from the modified array. so i can't use an .each type.
+	index += 1
+end
+
+for... no, while, with a check if it's at the end.
+each loop,
+	move one to the right, unless at the end, then back to the beginning
+	if first value is greater than second, switch their values
+
+if previous result = current result, end loop
+else previous result = current result
+
+--- --- ---
+
+index >= array.length - 1 ? index = 1 : index += 1
+left = index - 1; right = index
+
+this probably would work? i switched out of this before figuring the clone problem. --> made it into a second version.
