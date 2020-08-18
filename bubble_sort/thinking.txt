@@ -10,6 +10,9 @@ index = 0
 array.each_cons(2) do |pair|
 	if pair[1] > pair [0]
 	hmm.. but it wouldn't read from the modified array. so i can't use an .each type.
+		apparently each does read from the modified array - if you do recursion.
+		https://github.com/xtrator/TOPsolutions/blob/master/bubble_sort.rb
+		seems awfully inefficient though, just putting in puts to check where things are puts out an infinitely long list, whereas mine is like 10 or 20 lines tops.
 	index += 1
 end
 

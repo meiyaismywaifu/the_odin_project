@@ -1,0 +1,93 @@
+"Build a tic-tac-toe game on the command line where two human players can play against each other and the board is displayed in between turns.
+
+Think about how you would set up the different elements within the game... What should be a class? Instance variable? Method? A few minutes of thought can save you from wasting an hour of coding.
+Build your game, taking care to not share information between classes any more than you have to.
+Post your solution below, then check out the example solution provided."
+
+--- --- ---
+
+class... instance... object?..
+method at least is obvious.
+
+main: run until told to stop
+input: QWE/ASD/ZXC, "exit" stops loop
+
+outer loop
+	player one select X or O
+	confirmation player one this, player two that
+loop
+	display board with current game's tiles
+	check for win state
+	switch X/O turn
+	ask for user input // error if space is already occupied
+
+class... board?
+	x | x | x
+	-   -   -
+	x | x | x
+	-   -   -
+	x | x | x
+display board as.. method.
+board slots as.. variable.. in instance.
+input "q" would be gets.chomp.board.mark or whatever syntax.
+	separate checker and marker maybe? hm. what exactly should be where? i suppose that's not really a question, question is always "compared to what".
+? what is an object? should the board slots be something bigger than a variable? would it make a difference if it was a hash or a class or something else? let's just use variables.
+board slots default value is single space, " ".
+
+player turn/id should be stored in a different place? all of the above should be concerned with placement only.
+maybe file has two classes, "game" and "board". game is the loops [15~22]. is there a difference between this and just not putting it in a class? probably not in effect. a matter of concept and implementation.
+
+--- --- ---
+
+methods within a class:
+
+class Game
+  def initialize
+    p "initialize"
+    select # this is correct. "Game.select" is error, even if "select" is public.
+    play
+  end
+
+  def select
+    p "select"
+    @selinput = gets.chomp
+  end
+
+  def play
+    p "play"
+    p @selinput # this returns correctly.
+  end
+
+end
+
+new_game = Game.new
+
+--- --- ---
+
+instance variable across classes :
+
+class Board
+  attr_accessor :bv1
+  def initialize
+    p "initialize Board"
+    @bv1 = "nothing" # instance variable is instance variable
+  end
+end
+
+class Game
+  def initialize
+    p "initialize Game"
+    @board = Board.new # this allows "call" to read from here
+    call
+  end
+
+  def call
+    p "call"
+    p @board.bv1 # refers to existing variable
+    p "reassign"
+    @board.bv1 = "something"
+    p @board.bv1
+  end
+end
+
+new_game = Game.new
