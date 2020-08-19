@@ -91,3 +91,58 @@ class Game
 end
 
 new_game = Game.new
+
+--- --- ---
+
+require 'matrix' # in "stdlib" not in "core"
+x = Matrix[ [25, 93], [-1, 66] ]
+#x = Matrix[ ["a", "b"], ["c", "d"] ]
+p x
+
+--- --- ---
+
+@something is never assigned "nothing" at the top?? is it just not called?
+
+class Test
+  attr_accessor :something
+  @something = "nothing"
+
+  def initialize
+    p "test"
+    #@something = "something"
+    second
+  end
+
+  def second
+    p "second"
+    #@something = "even more something"
+  end
+end
+
+test = Test.new
+p test.something
+
+--- --- ---
+
+this works.
+
+require 'matrix'
+class Board
+  attr_accessor :coordinates, :board
+  def initialize
+    @board = Matrix.build(3,3){|row, col| " "}
+    @coordinates = { "q" => [0,0], "w" => [0,1], "e" => [0,2],
+                  "a" => [1,0], "s" => [1,1], "d" => [1,2],
+                  "z" => [2,0], "x" => [2,1], "c" => [2,2]}
+    second
+  end
+
+  def second
+    @coordinates["q"]
+  end
+end
+
+board = Board.new
+p board.board[board.coordinates["q"][0], board.coordinates["q"][1]]
+
+writing to matrix[row, column] though is not in ruby 2.5.
