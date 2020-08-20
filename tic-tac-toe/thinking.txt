@@ -146,3 +146,7 @@ board = Board.new
 p board.board[board.coordinates["q"][0], board.coordinates["q"][1]]
 
 writing to matrix[row, column] though is not in ruby 2.5.
+
+--- --- ---
+
+it would be interesting if i could make it not check for win state on a certain thing unless it had not been checked before. like if row 1 is xox there's no need to check that again, it won't change. how would that be done? a boolean for each row and column, then add it to the if state. that seems like it might be worth doing... if we had to execute a large number of things inside the if. but we don't. shouldn't expand scope so much.
