@@ -87,6 +87,7 @@ class Game
          end
       end
 
+      puts "--- --- ---"
       play #VSC doesn't recognize this as method?
    end
 
@@ -99,7 +100,7 @@ class Game
          @board.display
       
          # checks for win state
-         if @turn > 4 && board.complete?
+         if @turn > 4 && @board.complete?
             internal = true
             @turn -= 1
             next
@@ -144,7 +145,7 @@ class Game
    end
 
    def victory
-      if board.complete?
+      if @board.complete?
          if @turn.even?
             puts "Player 1 wins."
          else
