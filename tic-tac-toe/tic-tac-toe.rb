@@ -6,8 +6,8 @@ class Board
    def initialize
       @board = Matrix.build(3,3){|row, col| " "}
       @space = { "q" => [0,0], "w" => [0,1], "e" => [0,2],
-                       "a" => [1,0], "s" => [1,1], "d" => [1,2],
-                       "z" => [2,0], "x" => [2,1], "c" => [2,2]}
+                 "a" => [1,0], "s" => [1,1], "d" => [1,2],
+                 "z" => [2,0], "x" => [2,1], "c" => [2,2]}
    end
 
    def display
@@ -71,13 +71,13 @@ class Game
       
       until internal == true
          puts "Player 1, please enter either \"X\" or \"O\" as your mark."
-         input = gets.chomp.downcase
-         if input == "x"
-            @player = ["x", "o"]
+         input = gets.chomp.upcase
+         if input == "X"
+            @player = ["X", "O"]
             puts "Player 1 is X. Player 2 is O."
             internal = true
-         elsif input == "o"
-            @player = ["o", "x"]
+         elsif input == "O"
+            @player = ["O", "X"]
             puts "Player 1 is O. Player 2 is X."
             internal = true
          elsif input == "exit"
@@ -161,7 +161,7 @@ class Game
    end
 
    def exit
-      puts "Are you sure you want to exit? (y/n)"
+      puts "Are you sure you want to exit? (Y/N)"
       input = gets.chomp.downcase
       if input == "y" || input == "yes"
          puts "Thank you for playing."
@@ -170,7 +170,7 @@ class Game
          puts "Returning to the game..."
          return false
       else
-         puts "Neither \"y\" nor \"n\" were input.\nReturning to the game..."
+         puts "Neither \"Y\" nor \"N\" were input.\nReturning to the game..."
          return false
       end
    end
