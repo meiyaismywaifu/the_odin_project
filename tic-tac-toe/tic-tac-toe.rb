@@ -103,6 +103,9 @@ class Game
             internal = true
             @turn -= 1
             next
+         elsif @turn >= 9
+            internal = true
+            next
          end
          
          #input
@@ -141,10 +144,14 @@ class Game
    end
 
    def victory
-      if @turn.even?
-         puts "Player 1 wins."
+      if board.complete?
+         if @turn.even?
+            puts "Player 1 wins."
+         else
+            puts "Player 2 wins."
+         end
       else
-         puts "Player 2 wins."
+         puts "The game is a draw!"
       end
 
       puts "The next game will begin shortly..."
