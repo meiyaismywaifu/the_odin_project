@@ -11,11 +11,11 @@ class Board
    end
 
    def display
-      p " #{@board[0,0]} | #{@board[0,1]} | #{@board[0,2]} "
-      p " -   -   - "
-      p " #{@board[0,1]} | #{@board[1,1]} | #{@board[1,2]} "
-      p " -   -   - "
-      p " #{@board[1,2]} | #{@board[2,1]} | #{@board[2,2]} "
+      puts " #{@board[0,0]} | #{@board[0,1]} | #{@board[0,2]} "
+      puts " -   -   - "
+      puts " #{@board[0,1]} | #{@board[1,1]} | #{@board[1,2]} "
+      puts " -   -   - "
+      puts " #{@board[1,2]} | #{@board[2,1]} | #{@board[2,2]} "
    end
 
    def is_empty?(desired)
@@ -34,62 +34,146 @@ class Board
       @board.row(0).each_with_index do |current, index|
          # Vector.to_s is garbage, and so is to_a.to_s
          row = @board.row(index).to_a.join
-         if row == "xxx" || row == "ooo"
-            #return
+         if row == "XXX" || row == "OOO"
+            return true
          end
          column = @board.column(index).to_a.join
-         if column == "xxx" || column == "ooo"
-            # return
+         if column == "XXX" || column == "OOO"
+            return true
          end
       end
 
       # diag has a built-in method but antidiag doesn't.
       # there is no way to rotate/flip with stdlib as of 2.7.
-      # and i'm not writing one out.
+      # i'm not writing out an antidiag writer.
       diagonal = "#{@board[0,0]}#{@board[1,1]}#{@board[2,2]}"
-      if diagonal == "xxx" || diagonal = "ooo"
-         #return
+      if diagonal == "XXX" || diagonal = "OOO"
+         return true
       end
       antidiag = "#{@board[0,2]}#{@board[1,1]}#{@board[2,0]}"
-      if antidiag == "xxx" || antidiag = "ooo"
-         #return
+      if antidiag == "XXX" || antidiag = "OOO"
+         return true
       end
    end
 
 end
 
 class Game
-   #apparently can't initialize values out here.
+   @@inputs = %w[q w e a s d z x c] 
+   
    def initialize
       @board = Board.new
-      @inputs = %w[q w e a s d z x c] 
-      #initial... values? anything that needs to happen at startup.
-      #call select. note it's "select" not "game.select".
+      select
    end
 
    def select
-      # x/o selection, loop.
-      # e.g. @array = ["x", "o"]
-      # selection calls play, exit calls exit.
+      internal = false
+      
+      until internal == true
+         puts "Player 1, please enter either \"X\" or \"O\" as your mark."
+         input = gets.chomp.downcase
+         if input == "x"
+            @player = ["x", "o"]
+            puts "Player 1 is X. Player 2 is O."
+            internal = true
+         elsif input == "o"
+            @player = ["o", "x"]
+            puts "Player 1 is O. Player 2 is X."
+            internal = true
+         elsif input == "exit"
+            internal = exit
+         else
+            puts "Please, either \"X\" or \"O\"."
+         end
+      end
+
+      play #VSC doesn't recognize this as method?
    end
 
    def play
-      # the main loop: until complete = true or exit = true
-         # display: board.display
-         # check win state: board.complete. if true, complete = true, break
-            # start checking only after turn 5. this would be instance variable.
-         # switch turn: ?
-         # ask for input: board.is_empty then board.mark, or exit
-         # draw divider line between loops here.
-      # if win condition, call intialize. this is loop->loop, not loop(loop)
+      internal = false
+      @turn = 0
+
+      until internal == true
+         #display board
+         @board.display
+      
+         # checks for win state
+         if @turn > 4 && board.complete?
+            internal = true
+            @turn -= 1
+            next
+         end
+         
+         #input
+         if @turn.even?
+            current_player = @player[0]
+            puts "Player 1 (#{@player[0]}):"
+         else
+            curernt_player = @player[1]
+            puts "Player 2 (#{@player[1]}):"
+         end
+
+         desired = gets.chomp.downcase
+         input = false
+
+         until input = true
+            if @@inputs.include?(desired) && @board.is_empty?(desired)
+               input = true
+               @board.mark(player, desired)
+            elsif desired.include?("exit")
+               internal = exit
+               input = true
+               @turn -=1
+               next
+            else
+               "Please enter a valid space:"
+               desired = gets.chomp
+            end
+         end         
+
+         @turn += 1
+         puts "--- --- ---"
+            
+      end
+
+      victory
+   end
+
+   def victory
+      if @turn.even?
+         puts "Player 1 wins."
+      else
+         puts "Player 2 wins."
+      end
+
+      puts "The next game will begin shortly..."
+      puts "--- --- ---\n--- ---\n---"
+
+      initialize
    end
 
    def exit
-      # confirmation
-      # returns true or false value.
-      # the loops/exits are elsewhere. unclear how to break loop from outside, or to delete/end this object, but this should be the same effect.
+      puts "Are you sure you want to exit? (y/n)"
+      input = gets.chomp.downcase
+      if input == "y" || input == "yes"
+         puts "Thank you for playing."
+         return true
+      elsif input == "n" || input == "no"
+         puts "Returning to the game..."
+         return false
+      else
+         puts "Neither \"y\" nor \"n\" were input.\nReturning to the game..."
+         return false
+      end
    end
 
 end
 
+puts "This is a tic-tac-toe game. This description appears once."
+puts "Both players are to be human."
+puts "Selection of spaces on the board is via the keys q, w, e, a, s, d, z, x, and c."
+puts "These keys will select the corresponding space on the board."
+puts "At any time, you may type \"exit\" to exit the game."
+puts "The game will now begin."
 new_game = Game.new
