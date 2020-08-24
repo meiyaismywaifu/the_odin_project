@@ -13,9 +13,9 @@ class Board
    def display
       puts " #{@board[0,0]} | #{@board[0,1]} | #{@board[0,2]} "
       puts " -   -   - "
-      puts " #{@board[0,1]} | #{@board[1,1]} | #{@board[1,2]} "
+      puts " #{@board[1,0]} | #{@board[1,1]} | #{@board[1,2]} "
       puts " -   -   - "
-      puts " #{@board[1,2]} | #{@board[2,1]} | #{@board[2,2]} "
+      puts " #{@board[2,0]} | #{@board[2,1]} | #{@board[2,2]} "
    end
 
    def is_empty?(desired)
@@ -47,11 +47,11 @@ class Board
       # there is no way to rotate/flip with stdlib as of 2.7.
       # i'm not writing out an antidiag writer.
       diagonal = "#{@board[0,0]}#{@board[1,1]}#{@board[2,2]}"
-      if diagonal == "XXX" || diagonal = "OOO"
+      if diagonal == "XXX" || diagonal == "OOO"
          return true
       end
       antidiag = "#{@board[0,2]}#{@board[1,1]}#{@board[2,0]}"
-      if antidiag == "XXX" || antidiag = "OOO"
+      if antidiag == "XXX" || antidiag == "OOO"
          return true
       end
    end
@@ -63,6 +63,7 @@ class Game
    
    def initialize
       @board = Board.new
+      @stop = false
       select
    end
 
@@ -80,15 +81,17 @@ class Game
             @player = ["O", "X"]
             puts "Player 1 is O. Player 2 is X."
             internal = true
-         elsif input == "exit"
-            internal = exit
+         elsif input == "EXIT"
+            internal = exit; @stop = true
          else
             puts "Please, either \"X\" or \"O\"."
          end
       end
 
       puts "--- --- ---"
-      play #VSC doesn't recognize this as method?
+      unless @stop == true
+         play #VSC doesn't recognize this as method?
+      end
    end
 
    def play
@@ -98,7 +101,7 @@ class Game
       until internal == true
          #display board
          @board.display
-      
+         
          # checks for win state
          if @turn > 4 && @board.complete?
             internal = true
@@ -114,24 +117,24 @@ class Game
             current_player = @player[0]
             puts "Player 1 (#{@player[0]}):"
          else
-            curernt_player = @player[1]
+            current_player = @player[1]
             puts "Player 2 (#{@player[1]}):"
          end
 
          desired = gets.chomp.downcase
          input = false
 
-         until input = true
+         until input == true
             if @@inputs.include?(desired) && @board.is_empty?(desired)
                input = true
-               @board.mark(player, desired)
+               @board.mark(current_player, desired)
             elsif desired.include?("exit")
-               internal = exit
+               internal = exit; @stop = true
                input = true
                @turn -=1
                next
-            else
-               "Please enter a valid space:"
+            else 
+               puts "Please enter a valid space:"
                desired = gets.chomp
             end
          end         
@@ -141,7 +144,9 @@ class Game
             
       end
 
-      victory
+      unless @stop == true
+         victory
+      end
    end
 
    def victory
@@ -178,10 +183,12 @@ class Game
 
 end
 
+puts "--- --- --- --- --- ---"
 puts "This is a tic-tac-toe game. This description appears once."
 puts "Both players are to be human."
 puts "Selection of spaces on the board is via the keys q, w, e, a, s, d, z, x, and c."
 puts "These keys will select the corresponding space on the board."
 puts "At any time, you may type \"exit\" to exit the game."
 puts "The game will now begin."
+puts "--- --- --- --- --- ---"
 new_game = Game.new
