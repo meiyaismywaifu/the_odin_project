@@ -6,11 +6,11 @@ module Formatter
       internal = string.upcase.chars
       internal.each do |character|
          if colors.include?(character)
-            string_array << character
-            if string_display.length < 12
-               string_display << character + " - "
+            array << character
+            if display.length < 12
+               display << character + " - "
             else
-               string_display << character
+               display << character
             end
          end
       end

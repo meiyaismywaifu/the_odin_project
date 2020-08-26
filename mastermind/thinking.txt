@@ -25,3 +25,43 @@ class board
 did most of my thinking in the files themselves, but apparently didn't do a commit the first day. oops.
 was easier there since i could see what was where spatially.
 oh well.
+
+--- --- ---
+
+class ThingA
+   attr_reader :thing
+   def initialize
+      puts "a initial"
+      @thing = 5
+      thingB = ThingB.new
+   end
+end
+
+class ThingB
+   attr_reader :something
+   def initialize
+      puts "b initial"
+      @something = 6
+      # puts thingA.thing
+      puts @something
+   end
+end
+
+class ThingM
+   def initialize
+      puts "m initial"
+      thingA = ThingA.new
+      thingB = ThingB.new
+      puts "after"
+      puts thingA.thing
+      puts thingB.something
+   end
+end
+
+thingM = ThingM.new
+
+without [54], M cannot read from B. [45] does not work at all.
+
+--- --- ---
+
+apparently methods do not auto-clone their inputs as local variables and actually act on the same objects.

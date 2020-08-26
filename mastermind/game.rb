@@ -1,17 +1,18 @@
 class Game
    include Formatter
-   attr_reader :answer
+   # attr_reader :answer
+   # board cannot read from here, since it is within game.
+   # i thought game and board could be siblings under main but it seems siblings can't read across, and is actually the parent reading from both.
+   # apparently global is another way around this but that's annoying.
+   # this affects "update_board", ups inputs to include @answer from Game.
 
    def initialize
-      @answer = false
-      @stop = false
-      @turn = 1
+      @board = Board.new
       select
    end
 
    def select
       valid = false
-      play_as = nil
       until valid == true
          puts "Please select to play as either \"coder\" or \"breaker\"."
          puts "(don't actually select coder)"
@@ -35,6 +36,7 @@ class Game
             # ..more than its previous guess.
             # yeah i don't think i'm gonna do this.
       puts "Don't actually select coder."
+      puts "--- --- ---"
       select
          # user input: up to 4 chars, must be either o or x.
          # input as string, move o's to left and x's to right, fill -'s on left
@@ -45,7 +47,10 @@ class Game
    end
 
    def breaker
-      board.secret_gen
+      @answer = false
+      @stop = false
+      @turn = 1
+      @board.secret_gen
 
       #turn
       until @answer == true || @turn > 12 || @stop == true
@@ -61,30 +66,41 @@ class Game
 
          unless @stop
             # format input
-            formatted = array_to_display(string, board.colors)
-            response = board.check(formatted["array"], board.secret)
+            formatted = array_to_display(guess, @board.colors)
+            response = @board.check(formatted["array"], @board.secret)
             @answer = true if response == true
-            board.update_board(formatted["string"], response)
+            @board.update_board(@answer, formatted["string"], response)
+            puts @board.board
             @turn += 1 unless @answer == true
-
          end
       end
 
       complete unless @stop == true
-
    end
 
    def complete
       if @answer == true
-         #victory
+         puts "Congratulations."
       elsif @turn > 12
-         #defeat
-         #display secret
+         reveal = array_to_display(@secret, colors)["string"]
+         puts "You have run out of time."
+         puts "The secret was: #{reveal}"
+         puts "--- --- ---"
       end
 
-      #user input to play another game or not, return to select.
+      puts "Would you like to play again? (Y/N)"
+      continue = gets.chomp
+      valid = input("complete", continue)["valid"]
+
+      if valid == true && continue.include?("y")
+         # should be initialize, but since i haven't actually done the coder side
+         @board = Board.new
+         breaker
+      end
+
    end
 
+   # input validator
    def input (source, string)
       stop_commands = ["quit", "exit", "escape", "end", "stop"]
       action = { "valid"  => false,
@@ -93,7 +109,7 @@ class Game
       if string.downcase == "help"
          puts "The valid inputs in guessing are any combination of the characters"
          puts "\"R\", \"O\", \"Y\", \"G\", \"B\", \"V\", \" \", \"-\", \",\", and \".\""
-         puts "At any time you can also type \"exit\", or any of the stop commands to quit."
+         puts "At any time you can also type any of the stop commands to quit."
          puts "The stop commands are #{stop_commands}."
          puts "--- --- ---"
          return action
@@ -124,14 +140,14 @@ class Game
          when "breaker"
             string_internal = string.upcase
             string_chars = string_internal.chars
-            valid_set = board.colors << " " << "-" << "," << "."
+            valid_set = @board.colors.clone << " " << "-" << "," << "."
             color_count = 0
 
             string_chars.each do |character|
                if valid_set.include?(character) == false
                   puts "Invalid characters were detected."
                   return action
-               elsif board.colors.include?(character)
+               elsif @board.colors.include?(character)
                   color_count += 1
                   if color_count > 4
                      puts "Please enter no more than 4 colors."
@@ -145,7 +161,24 @@ class Game
 
          when "coder"
             # n/a
-         end
+
+         when "complete"
+            string = string.downcase
+            case string
+            when "y", "yes"
+               puts "--- --- ---"
+               action["valid"] = true
+               return action
+            when "n", "no"
+               puts "Thank you for playing."
+               puts "--- --- ---"
+               action["valid"] = true
+               return action
+            else
+               puts "Unknown response. Returning to menu."
+               return action
+            end
+          end
 
       end
    end

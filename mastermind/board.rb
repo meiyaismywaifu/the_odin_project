@@ -1,30 +1,32 @@
 class Board
    include Formatter
-   attr_reader :secret, :colors
+   attr_reader :secret, :colors, :board
 
    def initialize
-      @secret = []
       @colors = %w[R O Y G B V]
       @board = "--- --- --- --- ----"
    end
 
-   def update_board(guess, response)
-      top = 20
-      if board.answer == false
+   def secret_gen
+      @secret = []
+      4.times do
+         @secret << @colors[rand(@colors.length)]
+      end
+   end
+
+   def update_board(answer, guess, response) # see Game [3]
+      top = 20 # new guesses are inserted above old guesses and below secret.
+      if answer != true
          @board.insert(top,
             "\n#{guess} | #{response}" +
             "\n--- --- --- --- ----")
       else
-         # change to prepend formatted secret
          @board.insert(top,
             "\n#{guess} |     " +
             "\n--- --- --- --- ----")
-      end
-   end
-
-   def secret_gen
-      4.times do
-         @secret << @colors[rand(@colors.length)]
+         reveal = array_to_display(@secret.join, colors)["string"]
+         @board.prepend(
+            "#{reveal}       \n")
       end
    end
 
@@ -35,11 +37,14 @@ class Board
 
       else
          keys = ""
+         comparison = secret.clone
+         # apparently method inputs aren't automatically local clones??
+         # why would they do this
 
          # red
          remover = []
          guess.each_with_index do |color, index|
-            if color == secret[index]
+            if color == comparison[index]
                keys.prepend("x")
                remover << index
             end
@@ -47,7 +52,7 @@ class Board
          remover = remover.reverse! # because arrays are refreshed each iteration.
          remover.each do |index|
             guess.delete_at(index)
-            secret.delete_at(index)
+            comparison.delete_at(index)
          end
 
          # white
@@ -55,10 +60,10 @@ class Board
          until complete == true
             switch = false
             guess.each_with_index do |color, index|
-               if secret.include?(color)
+               if comparison.include?(color)
                   keys.prepend("o")
                   guess.delete_at(index)
-                  secret.delete_at(secret.index(color))
+                  comparison.delete_at(comparison.index(color))
                   switch = true
                elsif index == guess.length-1 && switch == false
                   complete = true
@@ -70,7 +75,6 @@ class Board
          guess.each do |color|
             keys.prepend("-")
          end
-
          return keys
          
       end
