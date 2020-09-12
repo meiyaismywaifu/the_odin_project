@@ -1,0 +1,6 @@
+
+event_manager/lib/event_manager.rb
+event_manager/event_attendees.csv
+event_manager/event_attendees_full.csv
+event_manager/form_letter.erb
+event_manager/form_letter.html
