@@ -89,3 +89,45 @@
 #    end
 # end
 # case_tester(0,"a")
+
+# def save(state, name="autosave")
+#    p "#{name}.json"
+# end
+# save("thing","2")
+
+# Dir.chdir("..")
+# puts File.open("think_gen.txt","r").size
+
+   # def new_word
+   #    target = 8693
+   #    length = 0
+   #    File.open("5desk.txt", "r").each_line.with_index do |line, index|
+   #       if index == target
+   #          word = line
+   #          break
+   #       end
+   #    end
+   #    puts word
+   # end
+   # new_word
+# ..how does .each_line.with_index work? ".with_index" is an enumerator method?..
+# File.open(thing)                      File. but "each_line" is a String method??
+# File.open(thing).each_line            Enumerator "if no block is given"
+# File.open("5desk.txt", "r").each_line.with_index       Enumerator?
+
+   # module Test
+   #    def test
+   #       puts "hi"
+   #       puts @secret
+   #    end
+   # end
+   # class Thing
+   #    include Test
+   #    attr_reader :secret
+   #    def initialize
+   #       @secret = "hello"
+   #       test
+   #    end
+   # end
+   # Thing.new
+# ...why does this work? oh well, convenient. why did i look into this again?

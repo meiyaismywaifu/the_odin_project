@@ -1,58 +1,137 @@
 require 'json' # apparently not class-level. program-level?..
+require_relative 'input.rb'
 
-module Input
-   # hm.. what could i put in here? if it's specific to a particular class then it's not really "modular". i suppose it doesn't have to be, it's a matter of organization, and "modules" are also "classes that don't need an instance".
-   # the first idea is to find things easily and then read things easily.
-   # ..i don't see anything wrong with the validator structure from mastermind.
-end
-
-class Hangman
+class Game
    include Input
    def initialize
-
-      ###
-      # game_file = {
-      #    "true" => "file",
-      #    "current" => %w[_ i _ e],
-      #    "miss" => %w[s t r],
-      #    "left" => 4,
-      # }
-      # File.open("testsave.json", "w") do |f|
-      #    f.write(JSON.pretty_generate(game_file))
-      # end
+      @dic_size = 0
+      @dic_name = "5desk.txt"
+      File.open(@dic_name, "r").each_line.with_index do |line, index|
+         @dic_size += 1
+      end
    end
-   # each round
-   # until exit, complete, or no more attempts
-      # autosave | how to save only previous move? that seems standard.
-      # get input
-         # can i set this as a separate method and loop there? is that allowed?
-      # check input, update current state
-      # display current state
-   # complete -> victory, no more attempts -> defeat
-   # autosave
-   # space to re-initialize
 
+   # initializations
+   def new_game
+      clear_state
+      new_word
+      hangman
+   end
+   def continue(savefile)
+      @state = savefile
+      hangman
+   end
+
+   def hangman
+      @exit = false
+      @answer = false
+      # main loop
+      until @exit == true || @answer == true || @miss > 7
+         # get/check input loop
+            # can i set this as a separate method and loop there? is that allowed?
+         # autosave previous state, unless previous == current (i.e. just loaded)
+         # previous state = clone current state
+         # update current state
+         # display current state
+      end
+
+      # completion
+      case
+      when #answer == true
+         # victory
+      when #miss > 7
+         # defeat
+         # reveal word
+      end
+
+      # autosave..? hm? loading after a completed game should be a new game..
+      # oh right, it'd be here if i wanted to keep winrates.
+      
+      # "continue?"
+      # input
+      case
+      when # hang the next man
+         clear_state
+         new_word
+         hangman
+      when # exit
+         #hmm... this would be a global variable wouldn't it.
+         $quit = true
+      else # menu
+         # will do so on its own
+      end
+
+   end
+
+   def save(state, name="autosave") # "autosave" is default value
+      # states should be instance scope
+      # autosave will pass the previous state
+      # manual save will pass current state
+      File.open("#{name}.json", "w") do |f|
+         f.write(JSON.pretty_generate(game_file))
+      end
+   end
+
+   def clear_state
+      @state = {
+         "secret"  => nil
+         "current" => []
+         "known_t" => []
+         "known_f" => []
+         "misses"  => 0    }
+   end
+   
+   # readlines holds entire file in memory.
+   # readline can't target a specific line..
+   # apparently enumerating is faster. or so people say.
+   def new_word
+      Dir.chdir("../lib")
+
+      pick = rand(@dic_size + 1) # rand is not top-inclusive
+      File.open(@dic_name, "r").each_line.with_index do |line, index|
+         if index == pick
+            @state["secret"] = line
+            break
+         end
+      end
+      
+      Dir.chdir("../saves")
+   end
 
 end
 
 class Menu
    include Input
-   attr_reader :thing
    def initialize
-      @thing = "secret"
       Dir.chdir("../saves")
-      game = Hangman.new
-      # hm. it wouldn't be new if it was loading. need to pass save from here to game, but that doesn't work since game is inside menu.. unless we start using globals.
-      # how do big games do it then? are games not actually inside menus?
-      # maybe don't do everything inside initialize...?
-      game.newsave
-      game.continue(file)
-      # like this maybe?
+      $quit = false
+      # hmm...
    end
+
    # menu
-   # loop unless exit
-      # continue / new / load / exit
-      # get input
+   until $quit == true
+      # display: continue / new / load / exit
+      # it'd be pretty cool if we could have a setting here for allowed misses
+      input = gets.chomp.downcase
+      case input
+      when #continue
+         # call autosave
+         game = Game.new
+         game.continue(file)
+      when #new
+         game = Game.new
+         game.new_game
+      when #load
+         # call specific file
+         game = Game.new
+         game.continue(file)
+      when #exit
+         $quit = true
+      else
+         # push to module
+      end
+   end
+
 end
 
 Menu.new # doesn't need to be stored in anything.
