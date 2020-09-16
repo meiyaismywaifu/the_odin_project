@@ -3,7 +3,15 @@ require_relative 'input.rb'
 
 class Game
    include Input
-   def initialize
+   def initialize(settings)
+      # read from settings
+      # trim dictionary to match settings, save modified dictionary
+         # would be nice to only change if... oh i can.
+         # unless exists, save dictionary settings
+         # load dictionary settings. if not identical to current settings, write new dictionary.
+         # do it in CSV.
+
+      # dictionary initialize
       @dic_size = 0
       @dic_name = "5desk.txt"
       File.open(@dic_name, "r").each_line.with_index do |line, index|
@@ -11,7 +19,7 @@ class Game
       end
    end
 
-   # initializations
+   # game initialize
    def new_game
       clear_state
       new_word
@@ -22,24 +30,38 @@ class Game
       hangman
    end
 
+   # main loop
    def hangman
-      @exit = false
+      @stop = false
       @answer = false
+      miss = 0 # this should read from @state instead.
+      first_turn = true # first turn since loading
+
+      puts #intro message here
+      previous_state = @state.clone
+
       # main loop
-      until @exit == true || @answer == true || @miss > 7
-         # get/check input loop
-            # can i set this as a separate method and loop there? is that allowed?
-         # autosave previous state, unless previous == current (i.e. just loaded)
-         # previous state = clone current state
-         # update current state
-         # display current state
+      until @stop == true || @answer == true || miss > @limit
+         checked = input("in_game",gets.chomp) # hash
+
+         save(previous_state) unless first_turn == true
+         previous_state = @state.clone
+         @state.merge(checked)
+         display
+
+         if # true == current
+            @answer = true
+         else
+            miss += 1
+         end
+         first_turn = false
       end
 
-      # completion
+      # completion message
       case
-      when #answer == true
+      when @answer == true
          # victory
-      when #miss > 7
+      when miss > 7
          # defeat
          # reveal word
       end
@@ -47,23 +69,28 @@ class Game
       # autosave..? hm? loading after a completed game should be a new game..
       # oh right, it'd be here if i wanted to keep winrates.
       
-      # "continue?"
-      # input
-      case
-      when # hang the next man
-         clear_state
-         new_word
-         hangman
-      when # exit
-         #hmm... this would be a global variable wouldn't it.
-         $quit = true
-      else # menu
-         # will do so on its own
+      # postgame input
+      # new game / main menu / quit
+      unless $quit == true || @stop == true
+         command = input("post_game", gets.chomp)
+         case
+         when command == "continue"
+            clear_state
+            new_word
+            hangman
+         when command == true # quits game and menu
+            $quit = true
+         else # returns to main menu automatically.
+         end
       end
 
    end
 
-   def save(state, name="autosave") # "autosave" is default value
+   def display
+      
+   end
+
+   def save(state, name="autosave") # defaults assigned at method declaration
       # states should be instance scope
       # autosave will pass the previous state
       # manual save will pass current state
@@ -76,7 +103,7 @@ class Game
       @state = {
          "secret"  => nil
          "current" => []
-         "known_t" => []
+         "known_t" => [] # what's wrong with just using current?
          "known_f" => []
          "misses"  => 0    }
    end
@@ -94,9 +121,12 @@ class Game
             break
          end
       end
-      
+   
       Dir.chdir("../saves")
    end
+
+   # def new_dic
+   # end
 
 end
 
@@ -105,32 +135,70 @@ class Menu
    def initialize
       Dir.chdir("../saves")
       $quit = false
+      #load_settings
+      @settings = {     # scope creep prevention
+         "min_size"     => 5
+         "max_size"     => 12
+         "guess_limit"  => 7
+      }
+      main_menu
       # hmm...
    end
 
-   # menu
-   until $quit == true
-      # display: continue / new / load / exit
-      # it'd be pretty cool if we could have a setting here for allowed misses
-      input = gets.chomp.downcase
-      case input
-      when #continue
-         # call autosave
-         game = Game.new
-         game.continue(file)
-      when #new
-         game = Game.new
-         game.new_game
-      when #load
-         # call specific file
-         game = Game.new
-         game.continue(file)
-      when #exit
-         $quit = true
-      else
-         # push to module
+   def main_menu
+      until $quit == true
+         # display
+
+         select = gets.chomp.to_s.downcase
+         case select
+         when "1", "continue"
+            file = load_game("autosave")
+            game = Game.new(@settings)
+            game.continue(file)
+         when "2", "new"
+            game = Game.new(@settings)
+            game.new_game
+         # when #load
+         #    # hmmm... display saves. this keeps getting bigger.
+         #    file = load_game(gets.chomp)
+         #    game = Game.new(@settings)
+         #    game.continue(file)
+         # when #settings
+         #    settings_menu
+         when "5", "exit"
+            $quit = true
+         else
+            input("menu", select)
+         end
       end
    end
+
+   def load_game(name)
+      # load file
+      # format json to hash
+      # return hash
+   end
+
+   # def settings_menu
+   #    # hmm. passing this through middleman seems like a pain.
+   #    # ...problem of designing a better middleman.
+   #    options = true
+   #    until options == false
+   #       # display
+
+   #       # minimum word size (smaller than max)
+   #       # maximum word size (larger than min)
+   #       # allowed misses (whole numbers)
+   #       # save settings
+   #       # return to main menu (warning if settings haven't been saved)
+   #    end
+   # end
+
+   # def load_settings # to a @settings hash
+   # end
+
+   # def save_settings
+   # end
 
 end
 

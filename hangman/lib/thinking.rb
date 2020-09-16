@@ -68,6 +68,23 @@
 # how would i have found this internally?
 # oh the other docs site has it. hm.
 
+# saving
+   # require 'json'
+   # Dir.chdir("../saves")
+   # File.open("testsave.json", "r") do |f|
+   #    JSON.parse(f)
+   # end
+# incomplete...
+   # require 'json'
+   # Dir.chdir("../saves")
+   # f = JSON.parse(File.read("testsave.json"))
+   # ## equivalent:
+   # ## f = File.read("testsave.json")
+   # ## f = IO.read("testsave.json")
+   # ## f = File.open("testsave.json", "r")
+   # puts f["current"].join
+# this feels like a rabbit hole.
+
    # class Test
    #    def initialize
    #       puts "testing"
@@ -131,3 +148,89 @@
    # end
    # Thing.new
 # ...why does this work? oh well, convenient. why did i look into this again?
+
+   # def input(string)
+   #    if string == "1"
+   #       puts "test"
+   #       return 1
+   #    else
+   #       puts "try again"
+   #       input(gets.chomp)
+   #    end
+   # end
+   # puts "enter '1'."
+   # result = input(gets.chomp)
+   # puts "result: #{result}"
+# is this "recursion"?
+
+# puts hash1 = {"A" => 0, "B" => 1, "C" => 3}
+# puts hash2 = {"A" => 1, "B" => 2}
+# puts hash1.merge(hash2)
+
+# def one(number)
+#    return two(number)
+# end
+# def two(number)
+#    return number + 3
+# end
+# puts one(2)
+
+   # @a = 1
+   # def thing(number)
+   #    @a += 1
+   #    number += 1
+   #    puts number
+   #    if @a > 4
+   #       puts "returning #{number}, #{@a}"
+   #       @carry = number.clone
+   #       return @carry
+   #    end
+   #    thing(number) unless @a > 4
+   #    puts @carry
+   #    return @carry
+   # end
+   # b = thing(5)
+   # puts "#{@a} #{b}"
+# huh. hm. well, makes sense in retrospect. not sure i get it though.
+
+   # def middleman(source, input)
+   #    puts "middleman"
+   #    puts source
+   #    request = input.to_i
+   #    if request == 1
+   #       puts "middle repeat"
+   #       middleman(source,gets.chomp)
+   #    elsif request == 2 || request == 3
+   #       second(request)
+   #    else
+   #       puts "terminating"
+   #    end
+   # end
+
+   # def second(request)
+   #    puts "passing"
+   #    if request == 2
+   #       puts "returning"
+   #       return 2
+   #    else
+   #       puts "please enter 2"
+   #       middleman("second",gets.chomp)
+   #    end
+   # end
+   # result = middleman("outside",gets.chomp)
+   # puts result
+# this doesn't look like a recursion like the complicated one did? just chaining.
+# adding "return" before method call changes nothing. maybe bc implicit returns?
+# idgi...
+
+# "arguments you supply to new are actually delivered to initialize."
+   # class Test
+   #    def initialize(settings=3)
+   #       @thing = settings
+   #       methodd
+   #    end
+   #    def methodd
+   #       puts "settings: #{@thing}"
+   #    end
+   # end
+   # Test.new(2)
