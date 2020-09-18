@@ -234,3 +234,164 @@
    #    end
    # end
    # Test.new(2)
+
+# --- --- --- #
+
+# map testing
+   # x = "thing".chars.map { |character| character.upcase}
+   # puts x
+
+# modules read their instance's variables
+   # module ThingMod
+   #    @@blah = "also"
+   #    def mod
+   #       puts @a + 3
+   #       puts @@blah
+   #    end
+   # end
+   # class Thing
+   #    include ThingMod
+   #    def initialize
+   #       @a = 5
+   #       mod
+   #    end
+   # end
+   # Thing.new
+
+# reverse include -> reverse boolean
+   # puts !("thing".include?("t"))
+   # puts "thing".include?("t").! # this feels a bit off but it's equivalent
+
+# stacking
+   # x = [1]
+   # a = {"b" => [1,2]}
+   # b = [1,2]
+   # p a["b"].include?(x.reduce)
+
+# # trying to combine keys at hash level
+   # a = {"miss" => 0}
+   # b = {"miss" => -1}
+   # a["miss"] = a["miss"] + b.fetch("miss")
+   # puts a
+
+# map, horizontal stacking
+   # state = "secret"
+   # current = %w[s _ _ _ _ _]
+   # x = "e"
+   # if state.include?(x)
+   #    current.map!.with_index do |char, index|
+   #       state[index] == x ? char = x : char = char
+   #    end
+   #    # long version:
+   #    # current.map!.with_index do |char, index|
+   #    #    if state[index] == x
+   #    #       char = x
+   #    #    else
+   #    #       char = char
+   #    #    end
+   #    # end
+   # end
+   # puts current
+# ask and ye shall receive.
+   # state = "secret"
+   # current = %w[s _ _ _ _ _]
+   # x = "e"
+   # if state.include?(x)
+   #    temp = current.map.with_index do |char, index|
+   #       state[index] == x ? char = x : char = char
+   #    end
+   # end
+   # puts temp # HA!
+
+# trying to combine keys at hash level
+   # a = {}
+   # a["b"] = 1
+   # p a["b"].is_a? Integer
+
+# single line if, multiple operations
+   # a = 5
+   # (puts "hello"; puts "hi") if a == 5
+
+# break testing
+   # a = 0
+   # b = 1
+   # until a > 5 || b > 6
+   #    a += 1
+   #    b += 2
+   #    puts "#{a} #{b}"
+   #    (puts "wao!"; break) if b > 4
+   # end
+   # puts "end"
+
+# CSV fiddling
+   # require 'csv'
+   # Dir.chdir("../dic")
+   # contents = CSV.read("dic_settings.csv", headers: true) do
+   #    puts "HELLO"
+   #    p contents["min_size"].reduce.to_i # that's annoying.
+   # end
+   
+   # require 'csv'
+   # Dir.chdir("../dic")
+   # contents = CSV.open("dic_settings.csv", headers: true) {|file| file.read}
+   # puts contents["min_size"]
+# apparently "contents" is a "CSV::Table" when headers are specified.
+
+# new dictionary prototyping
+# most of the work was reading docs and thinking how to ask the google gods
+   # require 'csv'
+   # Dir.chdir("../dic")
+   # setting = CSV.read("dic_setting.csv", headers: true){|file| file.read}
+   # setted = CSV.read("dic_setted.csv", headers: true){|file| file.read}
+   # unless setting == setted
+   #    min = setting["min_size"].reduce.to_i
+   #    max = setting["max_size"].reduce.to_i
+   #    puts "#{min} #{max}"
+   #    thing = ""
+   #    counter = 0
+   #    File.open("small_dic.txt", "r").each_line do |line|
+   #       counter +=1
+   #       thing << line if line.chomp.length >= min && line.chomp.length <= max
+   #       # tried map/map! and copying then deleted but succeeded here first
+   #    end
+   #    File.open("small_dic_mod.txt", "w"){|f| f.write("#{counter}\n#{thing}")}
+   # end
+   # puts File.open("small_dic_mod.txt", "r"){|f| f.readline}
+
+   # # file = File.open("small_dic.txt", "a+")
+   # # thing = ""
+   # # file.each_line.with_index do |line, index|
+   # #    thing << line if line.chomp.length > min && line.chomp.length < max
+   # # end
+   # # thing.each_line do |line|
+   # #    puts line
+   # # end
+
+   # # arr = %w[a b c d]
+   # # arr2 = arr.map do |letter|
+   # #    letter == "a" ? letter = 0 : letter = letter
+   # # end
+   # # p arr2
+
+# def case_tester2 (type, input)
+#    case
+#    when type == 0
+#       case input
+#       when "a"
+#          puts "WAA!"
+#       else
+#          puts "type 0, input #{input}"
+#       end
+#    when type == 1
+#       puts "type 1, input #{input}"
+#    when input == "a"
+#       puts "type #{type}, input a"
+#    when input == "b"
+#       puts "type #{type}, input b"
+#    end
+# end
+# case_tester2(0,"a")
+
+### --- --- --- ###
+
+# see if require JSON transfers across files/classes/things

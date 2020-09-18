@@ -7,8 +7,6 @@ module Input
    def input (source, string)
       request = string.downcase.clone
       stop_commands = ["quit", "exit", "escape", "end", "stop"]
-      action = { "valid"  => false,
-                 "select" => nil  } #hmm...
 
       case
       when request == "help"
@@ -20,6 +18,7 @@ module Input
          puts "--- --- ---"
          input(source, gets.chomp)
       when stop_commands.include?(request)
+         #...this means you can't guess the word for hangman when it's these commands. unless...
          value = exit
          return value
       when source == "in_game"
@@ -31,49 +30,63 @@ module Input
       end
    end
 
-   def guess_validator(request)      
-      if # only contains alphabet characters
-         if # one character
-            if # letter is not in "current" or "miss"
+   @@alphabet = ("a".."z").to_a # module has no instance
+   def guess_validator(request)
+      x = request.chars.select {|char| @@alphabet.include?(char)}
+      # only contains alphabet characters
+      if x.length == request.chars.length 
+         # single character
+         if x.length == 1
+            # letter is not in "current" or "miss"
+            if (@state["known_t"].include?(x.reduce).! &&
+               @state["known_f"].include?(x.reduce).!) 
                check_letter(request)
             else
-               # error "used before"
-               input("in_game", gets.chomp)
+               puts "#{x.reduce} has already been guessed."
+               guess_loop
             end
-         else # multiple characters
-            if # same length as "true"
-               check_word(request)
-            else
-               # error "guess wrong length"
-               input("in_game", gets.chomp)
-            end
+         # same length as "secret"
+         elsif x.length == @state["secret"].length
+            check_word(request)
+         else
+            puts "This word is not the correct length."
+            guess_loop
          end
       else
-         # error "alphabetical characters only"
-         input("in_game", gets.chomp)
+         puts "Alphabetical characters only."
+         guess_loop
       end
+   end
 
+   def guess_loop
+      puts "Please enter a letter, or guess the word."
+      input("in_game", gets.chomp)
    end
 
    def check_letter(character)
-      if #word contains character
-         # until previous and current index are the same
-         # reveal said character in ["current"]
+      checked = {}
+      #word contains character
+      if @state["secret"].include?(character)
+         checked["known_t"] = character
+         # reveal all instances of character
+         checked["current"] = @state["current"].map.with_index do |slot, index|
+            @state["secret"][index] == character ? slot = character : slot = slot
+         end
       else
-         # add character to ["miss"]
+         checked["known_f"] = character
       end
-      return @checked
+      return checked
    end
 
    def check_word(word)
-      if @state["true"] == word
-         # word: string to array
-         @checked["current"] = # that array
+      checked = {}
+      if @state["secret"] == word
+         checked["hit"] == true
       else
-         puts "That was not the right answer."
-         @checked["current"] = @state["current"]
+         puts "That was not the right word."
+         checked["hit"] == false
       end
-      return @checked
+      return checked
    end
 
    def post_game(request)
