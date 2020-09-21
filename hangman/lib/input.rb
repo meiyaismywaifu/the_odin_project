@@ -10,9 +10,7 @@ module Input
 
       case
       when request == "help"
-         puts # game rules here
-         # oh, i could do case/when under here for different sources.
-         # could be its own method.
+         help(source)
          puts "At any time you can also type any of the stop commands to quit."
          puts "The stop commands are #{stop_commands}."
          puts "--- --- ---"
@@ -65,38 +63,67 @@ module Input
 
    def check_letter(character)
       checked = {}
+      word = @state["secret"].downcase
       #word contains character
-      if @state["secret"].include?(character)
-         checked["known_t"] = character
+      if word.include?(character)
+         checked["known_t"] = character        
          # reveal all instances of character
          checked["current"] = @state["current"].map.with_index do |slot, index|
-            @state["secret"][index] == character ? slot = character : slot = slot
+            word[index] == character ? slot = character : slot = slot
          end
+
+         # re-upcase when relevant
+         if word != @state["secret"] && word[0] == character
+            @state["current"][0].upcase!
+         end
+
       else
          checked["known_f"] = character
       end
-      return checked
+      return checked # either [current, known_t], or [known_f]
    end
 
    def check_word(word)
       checked = {}
       if @state["secret"] == word
-         checked["hit"] == true
+         checked["current"] = word.chars
+         checked["hit"] = true
       else
          puts "That was not the right word."
-         checked["hit"] == false
+         checked["hit"] = false
       end
-      return checked
+      return checked # either true or false
    end
 
    def post_game(request)
-      # next game
+      case request.downcase
+      when "1", "new game", "continue"
          return "continue"
-      # menu
-         return #string
-      # other: defaults to menu
-         # error message
-         return #string
+      when "2", "main menu", "menu"
+         # upstream defaults to menu
+      when "3", "quit", "exit", "escape", "end", "stop"
+         return true
+      else
+         puts "Unrecognized command."
+         puts "Returning to main menu..."
+         # upstream defaults to menu
+      # ..this is probably so simple because it's so far downstream. upstream could use cleaning... but that's also not here.
+      end
+   end
+
+   def help(source)
+      case source
+      when "menu"
+         puts "This is a menu. It shouldn't be hard to use a menu."
+         main_menu
+      when "in_game"
+         puts "Enter a letter, or guess the word."
+         puts "Proper nouns will auto-capitalize for you."
+         puts "Guessing the word is free."
+      when "post_game"
+         puts "This is a menu. It shouldn't be hard to use a menu."
+         puts "And now, another menu."
+      end
    end
 
    def exit

@@ -392,6 +392,127 @@
 # end
 # case_tester2(0,"a")
 
-### --- --- --- ###
+# case [thing] is match only, case empty is like if/else.
+   # a = 4
+   # case 
+   # when a != 5
+   #    puts "hit"
+   # else
+   #    puts "nothing"
+   # end
 
-# see if require JSON transfers across files/classes/things
+# append inside hash
+   # a = {"array" => %w[a b c]}
+   # b = {"array" => %w[d e f]}
+   # a["array"].push(b["array"])
+   # puts a["array"]
+
+# display testing
+   # state = {
+   #    "number"  => 7,
+   #    "current" => %w[_ _ _ _ _],
+   #    "known_f" => %w[a b c d]
+   # }
+   #    # huh. puttin a newline inside puts reflects in its output.
+   #    # apparently 'print' is puts without newline, but you need to use stdsync or flush or something complicated and i don't feel like looking into it.
+   # puts "#{state["number"]} | #{state["current"].join(" ")} | #{state["known_f"].join(", ")}"
+
+# clone problems inspection
+   # state = {
+   #    "number"  => 7,
+   #    "current" => %w[_ _ _ _ _],
+   #    "known_t" => [],
+   #    "known_f" => %w[a b c d]
+   # }
+   # second = state.clone
+   # state["known_t"].push("w")
+   # p state["known_t"]
+   # p second["known_t"]
+   # p state["known_t"].object_id
+   # p second["known_t"].object_id
+# what... why? so if it's empty it copies all future mappings?
+   # first = {"key" => %w[a b]}
+   # second = first.clone
+   # first["key"].push("w")
+   # p first["key"]
+   # p second["key"]
+# ??? that's not it either...
+   # first = {"key" => %w[a b]}
+   # second = first.clone
+   # first["key"] = first["key"].push("w")
+   # p first["key"]
+   # p second["key"]
+# so it's a push problem. why?????
+   # first = %w[a b]
+   # second = first.clone
+   # first.push("w")
+   # p first
+   # p second
+# it's a push problem *specifically* inside hashes. huh. that's annoying....
+# what do dis mean...
+   # state = {
+   #    "number"  => 7,
+   #    "current" => %w[_ _ _ _ _],
+   #    "known_t" => [],
+   #    "known_f" => %w[a b c d]
+   # }
+   # second = state.clone
+   # p state.object_id
+   # p second.object_id
+   # p state["current"].object_id
+   # p state["known_f"].object_id
+   # p second["current"].object_id
+   # p second["known_f"].object_id
+# the hashes aren't the same object, but the things inside them are.
+# public example
+   # first = {"key" => %w[a b]}
+   # second = first.clone
+   # first["key"] = first["key"].push("w")
+   # p first["key"]
+   # p second["key"]
+# retrieved example
+   # a = [1,2]
+   # b = a.dup
+   # a << 3
+   # puts b.inspect
+   # a = [ [1,2] ]
+   # b = a.dup
+   # a[0] << 3
+   # puts b.inspect
+      # "There is another method worth mentioning, clone. The clone method does the same thing as dup with one important distinction: it's expected that objects will override this method with one that can do deep copies.
+
+      # So in practice what does this mean? It means each of your classes can define a clone method that will make a deep copy of that object. It also means you have to write a clone method for each and every class you make."
+   # def deep_copy(o)
+   #    Marshal.load(Marshal.dump(o))
+   # end
+   # first = {"key" => %w[a b]}
+   # second = deep_copy(first)
+   # first["key"] = first["key"].push("w")
+   # p first["key"]
+   # p second["key"]
+# "Marshalling is Ruby's name for serialization. With marshalling, the object--with the objects it refers to--is converted to a series of bytes; those bytes are then used to create another object like the original."
+# huh.
+# some people saying marshal as general purpose un/serialization is bad for reasons i don't care about, and i also don't like it because idgi. someone suggests using JSON instead.
+   # require 'json'
+   # def deep_copy(hash)
+   #    return JSON.parse(hash.to_json)
+   # end
+   # first = {"key" => %w[a b]}
+   # second = deep_copy(first)
+   # first["key"] = first["key"].push("w")
+   # p first["key"]
+   # p second["key"]
+# fantastic.
+
+# CSV writing
+   # require 'csv'
+   # min = 99
+   # Dir.chdir("../dic")
+   # setted = CSV.read("dic_setted.csv", headers: true){|file| file.read}
+   # CSV.open("dic_setted.csv", "w") do |csv|
+   #    csv << %w[min_size max_size]
+   #    csv << ["#{min}", "100"]
+   # end
+# apparently "editing" CSV isn't as trivial as it is on excel.
+# "edit" seems to be a concept for databases...? other than that it's read or write, and you could read the entire file into memory, pick it out, then write it all again, or at least that's how it works as far as i understand it. reading is easy and +/- as expected, but writing not so much.
+# didn't look into fancy stuff because i only need this much.

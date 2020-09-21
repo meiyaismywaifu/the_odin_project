@@ -1,10 +1,11 @@
 require 'json'
 require_relative 'input'
+require_relative 'dictionary'
 
 class Game
    include Input
    include Dictionary
-   def initialize(settings)
+   def initialize
       load_dic
    end
 
@@ -12,10 +13,12 @@ class Game
    def new_game
       clear_state
       new_word
+      display
       hangman
    end
    def continue(savefile)
       @state = savefile
+      display
       hangman
    end
 
@@ -23,29 +26,25 @@ class Game
    def hangman
       @stop = false
       @answer = false
-      remain = @state["remain"]
+      remain = @state["remain"] ## this doesn't link the two? mb "deep" problems.
+      previous_state = deep_copy(@state)
       first_turn = true # first turn since loading
 
-      puts #intro message here
-      previous_state = @state.clone
+      puts "--- HANGMAN ---"
+      puts "Enter a letter, or guess the word."
 
       # main loop
-      until @stop == true || @answer == true || remain <= 0
+      until @stop == true || @answer == true || @state["remain"] <= 0
          checked = input("in_game",gets.chomp) # hash
          (@stop = true; break) if checked == true # break has to come last
 
-         save(previous_state) unless first_turn == true
-         previous_state = @state.clone
-         @state.merge(checked)
-            # this is not trivial.
+         previous_state = deep_copy(@state)
+         state_merge(checked)
+         save(previous_state) unless first_turn == true # && current is empty..?
 
+         # complete?
          if @state["secret"] == @state["current"].join || checked["hit"] == true
             @answer = true
-         elsif checked["known_t"] != nil
-            # hm..?
-         else
-            @state["remain"] -= 1
-            remain -= 1
          end
 
          display
@@ -56,8 +55,8 @@ class Game
       case
       when @answer == true
          puts "Congratulations."
-      when remain <= 0
-         put "The man has been hanged."
+      when @state["remain"] <= 0
+         puts "The man has been hanged."
          puts "The word was \"#{@state["secret"]}\"."
       end
       
@@ -68,13 +67,11 @@ class Game
          case
          # new game
          when command == "continue"
-            clear_state
-            new_word
-            hangman
+            new_game
          # quits game and menu
          when command == true 
             $quit = true
-         # returns to main menu automatically.
+         # returns to main menu
          else 
          end
       end
@@ -82,24 +79,42 @@ class Game
    end
 
    def display
-      
+      # 7 | _ _ _ _ _ | a, b, c
+      current = @state["current"].join(" ")
+      known_f = @state["known_f"].join(", ")
+      puts "#{@state["remain"]} | #{current} | #{known_f}"
+      puts "--- --- --- ---"
+   end
+
+   def state_merge(checked)   
+      case # i like if/else, but case/when/else being same length is really nice
+      when checked["current"] != nil
+         @state["current"] = checked["current"].clone
+         @state["known_t"].push(checked["known_t"])
+      when checked["known_f"] != nil
+         @state["known_f"].push(checked["known_f"])
+         @state["remain"] -= 1
+      end
+   end
+   
+   def deep_copy(hash) # see thinking [420~505]
+      return JSON.parse(hash.to_json)
    end
 
    def save(state, name="autosave") # defaults assigned at method declaration
-      # states should be instance scope
-      # autosave only: pass previous state
       File.open("#{name}.json", "w") do |f|
-         f.write(JSON.pretty_generate(game_file))
+         f.write(JSON.pretty_generate(state))
       end
    end
 
    def clear_state
       @state = {
-         "secret"  => nil
-         "current" => []
-         "known_t" => []
-         "known_f" => []
-         "remain"  => $limit.clone}
+         "secret"  => nil,
+         "current" => [],
+         "known_t" => [],
+         "known_f" => [],
+         "remain"  => $limit.clone
+      }
    end
    
 end

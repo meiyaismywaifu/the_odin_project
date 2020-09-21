@@ -1,4 +1,5 @@
-require 'json' # apparently not class-level. program-level?..
+require 'json' # apparently program-level. scope-independent?
+               # good practice to keep these here anyway.
 require_relative 'input'
 require_relative 'hangman'
 
@@ -8,13 +9,12 @@ class Menu
       Dir.chdir("../saves")
       $quit = false
       $limit = 7
-
       main_menu
-      # hmm...
    end
 
    def main_menu
       until $quit == true
+         puts "--- --- --- ---"
          puts "--- HANGMAN ---"
          puts "[1] Continue"
          puts "[2] New Game"
@@ -23,9 +23,8 @@ class Menu
          select = gets.chomp.to_s.downcase
          case select
          when "1", "continue"
-            file = load_game
             game = Game.new
-            game.continue(file)
+            game.continue(load_game)
          when "2", "new"
             game = Game.new
             game.new_game
@@ -38,7 +37,7 @@ class Menu
    end
 
    def load_game
-      return JSON.parse(File.read("testsave.json"))
+      return JSON.parse(File.read("autosave.json"))
    end
 
 end
