@@ -1,32 +1,18 @@
 {
-  "secret": "poetically",
+  "secret": "Judean",
   "current": [
     "_",
-    "o",
-    "e",
-    "t",
-    "i",
+    "_",
+    "_",
     "_",
     "a",
-    "l",
-    "l",
     "_"
   ],
   "known_t": [
-    "e",
-    "t",
-    "i",
-    "a",
-    "l",
-    "o"
+    "a"
   ],
   "known_f": [
-    "u",
-    "s",
-    "r",
-    "n",
-    "g",
-    "h"
+
   ],
-  "remain": 1
+  "remain": 7
 }
