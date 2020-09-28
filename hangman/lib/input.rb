@@ -74,7 +74,7 @@ module Input
 
          # re-upcase when relevant
          if word != @state["secret"] && word[0] == character
-            @state["current"][0].upcase!
+            checked["current"][0].upcase!
          end
 
       else
