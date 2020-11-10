@@ -71,3 +71,14 @@ def merge_sort(array)
       return sorted
    end
 end
+
+# wao
+until array1.empty? || array2.empty? # evades nil comparison
+   mergedarray << if array1[0] <= array2[0]
+                    array1.shift
+                  else
+                    array2.shift
+                  end
+ end
+ mergedarray.concat(array1, array2) # evades nil comparison
+# https://github.com/teshigahara/merge-sort/blob/master/merge_sort.rb

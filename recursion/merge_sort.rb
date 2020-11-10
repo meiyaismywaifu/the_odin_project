@@ -10,13 +10,13 @@ def merge_sort(array)
       until left.length == 0 && right.length == 0
          case
          when right.length == 0
-            sorted << left.slice!(0) 
+            sorted << left.shift
          when left.length == 0
-            sorted << right.slice!(0)
+            sorted << right.shift
          when left[0] < right[0]
-            sorted << left.slice!(0) 
+            sorted << left.shift 
          when right[0] < left[0]
-            sorted << right.slice!(0)
+            sorted << right.shift
          end
       end
       return sorted
