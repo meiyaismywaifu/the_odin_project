@@ -1,4 +1,6 @@
 require_relative 'node'
 require_relative 'linked_list'
 
-puts "hello"
+list = LinkedList.new
+list.append(1)
+p list.tail.value

@@ -24,3 +24,9 @@
 
 # ...? can i put the thing itself there? like variable1 = variable2 sets equal?
 # is that the intention?
+
+# append(value):
+   # node = Node.new(value)
+   # @head.nil? ? @head = node : @tail.next_node = node
+   # @tail = node
+# i find this version a lot harder to read.
