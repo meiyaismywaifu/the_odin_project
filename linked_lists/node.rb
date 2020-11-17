@@ -9,6 +9,13 @@ class Node
       @next_node = next_node
    end
 
+   # def next
+   #    return ObjectSpace._id2ref(next_node)
+   # end
+   #    this works fine but
+   #     - next is a reserved word
+   #     - better in linkedlist class
+
    # def value
       # value would need an input..
       # ..what's wrong with using attr_accessor? need instance variable anyway.

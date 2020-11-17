@@ -30,3 +30,13 @@
    # @head.nil? ? @head = node : @tail.next_node = node
    # @tail = node
 # i find this version a lot harder to read.
+
+# hmm, this is more like a russian doll than a list of links.
+# call object by ID?
+   # "One problem you may run into is that if the only 'reference' you keep to an object is the object_id, the object can be collected by GC when you're not looking."
+# "ObjectSpace._id2ref(id)" calls object, apparently.
+# yeah, this was what i had in mind.
+
+# should i do node.next or next(node)?
+# oh, "next" is a reserved work. okay then.
+# ...? but it works? bad practice i suppose. rename then..
