@@ -1,37 +1,37 @@
 class Tree
     attr_accessor :root
 
-    def initialize(array = nil)
+    def initialize(array)
         @array = prepare(array)
     end
 
     # instructions said to make build_tree do this,
     # but since it's recursion it seemed wasteful.
-    def prepare(array)
+    def prepare(array = @array)
         return array.uniq.sort
     end
 
+    # build_tree(array)... block would be array length == 1?
+    #   if array length == 1                    [criteria]
+    #       return new node of this value       [block]
+    #   else
+    #       new node:                           [recursion]
+    #       value = middle
+    #       left_child = build_tree(<middle)
+    #       right_child = build_tree(>middle)
+    #       return node                         [final answer]
+    #   end
     def build_tree(array = @array)
-        # build_tree(array)... block would be array length == 1?
-        #   if array length == 1                    [criteria]
-        #       return new node of this value       [block]
-        #   else
-        #       new node:                           [recursion]
-        #       value = middle
-        #       left_child = build_tree(<middle)
-        #       right_child = build_tree(>middle)
-        #       return node                         [final answer]
-        #   end
-        # ...where's the [execute]?
-
-        if array.length == 1
-            return Node.new(array[0])
-            # >>> will this assign correctly? there's no initialize.
-        else
-            # [recursion]
-            # return node
-        end
-
+        return Node.new(array[0]) if array.length == 1  # [two blocks]
+        return Node.new(array[0],nil,Node.new(array[1])) if array.length == 2
+        # two blocks because [0..middle-1] on length 2 returns length 2.
+    
+        node = Node.new
+        middle = (array.length-1)/2.floor               # [recursion]
+        node.value = array[middle]
+        node.left_child = build_tree(array[0..middle-1])
+        node.right_child = build_tree(array[middle+1..-1])
+        return node                                     # [final answer]
     end
     
     def insert(value)
