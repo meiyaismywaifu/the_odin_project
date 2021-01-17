@@ -16,4 +16,4 @@ array = [4,8,6,2,1,7,5,3]
 # array = [7,8]
 tree = Tree.new(array)
 tree.root = tree.build_tree
-p tree.root
+p tree.root.value
