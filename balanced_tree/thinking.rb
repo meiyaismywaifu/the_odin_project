@@ -238,7 +238,189 @@
 
 
 
+# Stop wasting your time on recursion kek
+
+# that's what the next thing in the list was
+
+# It's ltiearlly causing a shitstorm at my job because some guy wanted recursion on our project
+
+# i don't think i ever want recursion
+
+# Fixing and adding anything to a recursive function is a pain in the ass
+
+# it serves a purpose but i don't like it
+# it's like the opposite of good code
+# good code should be explicit structure that is self explanatory
+
+# If you want to add recursion it better be the final version that section of code
+
+# recursion is literally trying to hide as much structure as you can jack yourself off to find
+
+# Recursion was probably good in the era of NASA space "gotta save every byte" era
+# Now-a-days code should be self documenting like you said.
+
+
+
 # could do the object_id thing from linked_list.
 # +: readable
 # -: it's supposed to be a tree
 # well, we'll see what the rest of this wants; we know how to add it already.
+
+# after [find](below), think i'll keep it without object_id.
+
+
+
+# def find(value)
+    # return node with given value
+
+    # node = @root
+    # until found or read through all nodes
+        # if node.value = request, return node
+        # else traverse?
+            # it'd have to be recursive travel right?
+            # how would you stop recursive travel after the solution has been found? instance var? it's outside information.
+            # teshigahara doesn't appear to stop it. oh he just has it in place of level_order, apparently. that makes some sense. except level_order should return array of values.
+            # both of these are recursive travel, one of these stops at first true result and returns node, other doesn't stop and returns values...
+    # end
+    # return value not found
+# end
+
+# hm?
+    @found = false
+    def find(value, node = @root)
+        return nil if @found == true
+        return @found = true; node if node.value == value
+
+        # recursion
+    end
+# does this work?
+    @result = false
+    @second = nil
+    def tester
+        return p "true" if @result == true
+        return p "false", @second = "notnil" if @result == false
+    end
+    tester
+    p @second
+# ; ignores second command.
+# , returns both commands. so looks like it can't be that compact.
+
+# wait, when would i assign @found's value then?
+# instance initialization and... end of method? but the end of the method gets called multiple times.
+# oh, solved it. that was unexpectedly simple
+
+    def find(value, node = root)
+        node = traverse_tree(value, node) until traverse_tree(value, node).nil? || node.data == value
+        node.data == value ? node : nil
+    end
+# this guy's solution is really clean. what is this?
+    def find(value, node = root)
+        until traverse_tree(value, node).nil? || node.data == value
+            node = traverse_tree(value, node) 
+        end
+        node.data == value ? node : nil
+    end
+# his traverse_tree... has a comparison on value. i see.
+# https://github.com/ChargrilledChook/binary-search-tree/blob/master/tree.rb
+# i forgot i was dealing with a tree of numbers. oops.
+
+    def find(value, node = @root)
+        # end cases: thing itself, found elsewhere, end leaf
+        # end leaf trigger built into recursion section.
+        if @found == true
+            return nil
+        elsif node.value == value
+            @found = true
+            return node
+        end
+
+        # recursion: search left and right.
+        # end cases pass either [nil] or [node]. pass node if exists.
+        # base is uniques array so there won't be two [node]s.
+        left_search, right_search = nil, nil
+        left_search = find(value, node.left_child) unless node.left_child.nil?
+        right_search = find(value, node.right_child) unless node.right_child.nil?
+
+        # re-initialize trigger. this only executes at the end.
+        @found = false if node == root
+
+        if    left_search != nil; return left_search
+        elsif right_search != nil; return right_search
+        else  return nil
+        end
+    end
+# this is functional.
+# i thought it was breadth first but apparently it isn't. what is this?
+# preorder...?
+
+
+
+# wanted to add 9 to array to fit visualization earlier, but gave 5 as middle. [array.length/2.floor-1] was what i wanted, but i switched it because [133]. so it's not fixed?..
+# oh, fixed it.
+# before:
+    def build_tree(array = @array)
+        return Node.new(array[0]) if array.length == 1  # [two blocks]
+        return Node.new(array[0],nil,Node.new(array[1])) if array.length == 2
+        # two blocks because [0..middle-1] on length 2 returns length 2.
+
+        node = Node.new
+        middle = (array.length-1)/2.floor               # [recursion]
+        node.value = array[middle]
+        node.left_child = build_tree(array[0..middle-1])
+        node.right_child = build_tree(array[middle+1..-1])
+        return node                                     # [final answer]
+    end
+# after:
+    def build_tree(array = @array)
+        return Node.new(array[0]) if array.length == 1 # [block]
+
+        node = Node.new                                # [recursion]
+        middle = array.length/2.floor-1 # this was changed
+        left = (middle == 0 ? 0 : middle-1) # second block moved here
+
+        node.value = array[middle]
+        node.left_child = build_tree(array[0..left])
+        node.right_child = build_tree(array[middle+1..-1])
+        return node                                    # [final answer]
+    end
+# apparently not good enough to catch it after call if i change the definition of middle?
+# now there's other problems...
+# oh im retarded, 5 is the middle of 1-9.
+
+
+
+# 1 2 3 4 5 6 7 8 9
+#        5
+#      /- -\
+#     2     7
+#    / \   / \
+#   1   3 6   8
+#        \     \
+#         4     9
+
+
+
+# what is pre/in/post order?
+# a matter of [what]'s placement with respect to the recursions?
+# i can move my find's end from before to middle but not after without breaking. why?
+# ...i'm starting to see why fixing recursive problems is a pain in the ass.
+
+
+
+# Node, Comparable module:
+    # "As a bonus, try including the Comparable module and compare nodes using their data attribute."
+        # this appears in the documentation, calling it doesn't give error.
+        # attribute = instance variable.. this module adds one of these...
+    # this doesn't work. "undefined method 'value' for nil:NilClass". the example does work. why?
+    # oh. it disagrees with something in find.
+    # can't find why.
+    # i don't feel like fixing this.
+# in Node it's
+    include Comparable
+    def <=>(other)
+        value <=> other.value
+    end
+# and as long as "value" is defined as attr it doesn't itself cause problems.
+# plausibly worth using if find is rewritten.
+
+
