@@ -424,3 +424,44 @@
 # plausibly worth using if find is rewritten.
 
 
+
+# apparently these depth-firsts work.
+    def preorder(node = @root, result = [])
+        result << node.value
+        preorder(node.left_child, result) unless node.left_child.nil?
+        preorder(node.right_child, result) unless node.right_child.nil?
+        return result
+    end
+# i'm not entirely sure how they work.
+
+
+
+    case other.is_a?
+    when Node
+        value <=> other.value
+    when Integer
+        value <=> other
+    else
+        puts "Node does not know how to compare to this: #{other}"
+    end
+# this would be nice. unfortunately, case/when are connected by ==.
+
+
+
+# wait, "insert" is full of shit. you're not splicing things into the tree, you're building on top of it.
+
+
+
+# forgot to change spacing to 3. oops.
+# 4 looks ok? [def ] lines up now but [if ] does not.
+# that encourages more methods doesn't it.
+
+
+
+# [@near > value] works while [value < @near] doesn't.
+# why?
+# oh, is it because [@near >] is a method defined in node while [value > @near] looks for the method called [value >]?
+
+
+
+# "delete" is not obvious at all. this isn't how trees work!!!

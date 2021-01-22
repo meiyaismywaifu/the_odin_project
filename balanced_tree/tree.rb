@@ -4,6 +4,7 @@ class Tree
     def initialize(array)
         @array = prepare(array)
         @found = false
+        @near = "N/A"
     end
 
     # instructions said to make build_tree do this,
@@ -35,44 +36,57 @@ class Tree
         return node                                     # [final answer]
     end
     
+    # this name is full of shit. it's add(value).
+    # it's only here because that's the project spec.
     def insert(value)
-        # if value exists, error
-        # otherwise, new node? how much reorganizing is this?
+        check = find(value)
+        unless check.is_a? Node
+            if @near > value
+                @near.left_child = Node.new(value)
+                p "#{value} now left_child of #{@near.value}."
+            elsif @near < value
+                @near.right_child = Node.new(value)
+                p "#{value} now right_child of #{@near.value}."
+           end 
+        else
+            p "#{value} exists at #{check}."
+        end
+        @near = "N/A"
     end
     def delete(value)
-        # "you’ll have to deal with several cases for delete such as when a node has children or not"
+        check = find(value)
+        unless check.is_a? String
+            # no children : remove from parent
+            # one child : replace self in parent with child
+            # two children: replace self with next inorder
+        else
+            p "#{value} does not exist in this tree."
+        end
     end
 
-    # this is "traverse until found"
-    # since it's a tree of numbers, can just compare.
-    def find(value, node = @root)
-        # return node with given value
-        # end cases: thing itself, found elsewhere, end leaf
-        # end leaf trigger built into recursion section.
-        if @found == true
-            return nil
-        elsif node.value == value
-            @found = true
-            return node
+    # finds node with given value
+    # this is v2, see thinking[273~327] for original.
+    # changed because these nodes are numbers, not arbitrary objects.
+    # returns node or error
+    def find(value)
+        @near = @root
+        hit = false; result = "#{value} not found"
+        until hit == true
+            if @near == value
+                result = @near; hit = true
+            elsif @near.is_leaf?
+                hit = true
+            elsif @near > value # [value < @near] doesn't work
+                @near = @near.left_child
+            elsif @near < value
+                @near = @near.right_child
+            end
         end
-
-        # recursion: search left and right.
-        # end cases pass either [nil] or [node]. pass node if exists.
-        # base is uniques array so there won't be two [node]s.
-        left_search, right_search = nil, nil
-        left_search = find(value, node.left_child) unless node.left_child.nil?
-        right_search = find(value, node.right_child) unless node.right_child.nil?
-
-        # re-initialize trigger. this only executes at the end.
-        @found = false if node == root
-
-        if    left_search != nil; return left_search
-        elsif right_search != nil; return right_search
-        else  return nil
-        end
+        return result
     end
 
     # breadth-first level order
+    # returns array
     def level_order
         result = []
         queue = []
@@ -89,14 +103,24 @@ class Tree
     end
 
     # depth-first types
-    def inorder
-        #return array of values
+    # returns array
+    def preorder(node = @root, result = [])
+        result << node.value ###
+        preorder(node.left_child, result) unless node.left_child.nil?
+        preorder(node.right_child, result) unless node.right_child.nil?
+        return result
     end
-    def preorder
-        #return array of values
+    def inorder(node = @root, result = [])
+        inorder(node.left_child, result) unless node.left_child.nil?
+        result << node.value ###
+        inorder(node.right_child, result) unless node.right_child.nil?
+        return result
     end
-    def postorder
-        #return array of values
+    def postorder(node = @root, result = [])
+        postorder(node.left_child, result) unless node.left_child.nil?
+        postorder(node.right_child, result) unless node.right_child.nil?
+        result << node.value ###
+        return result
     end
 
     def height
