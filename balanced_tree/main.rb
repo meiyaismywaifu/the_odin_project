@@ -15,4 +15,7 @@ require_relative 'tree'
 array = [4,8,6,2,1,7,5,3,9]
 tree = Tree.new(array)
 tree.root = tree.build_tree
-tree.insert(10)
+tree.pretty_print
+
+tree.delete(2)
+tree.pretty_print

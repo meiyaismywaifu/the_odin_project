@@ -465,3 +465,38 @@
 
 
 # "delete" is not obvious at all. this isn't how trees work!!!
+
+
+
+# [find] and [find_parent] are identical except for the hit condition.
+# i think ive done something like this before? i passed in an array or hash of arguments. i feel that's less elegant now though.
+    # find(5), find_parent(5)
+# is more elegant than
+    # find(5,node), find(5, parent)
+# like if i say find in a tree, obviously i want to find the node, so the default argument sounds stupid. if the second argument is optional well okay, but "find parent 5" is superior to "find 5 parent". if it were possible to have optional arguments before required ones then maybe there'd be a discussion, but there isn't.
+# on the other side i don't see code being cleaner. it'd be the same length, unless there's a way to replace that one condition.
+# oh. it's "if (node)", "elsif (parent)", then the conditions themselves.
+# ...computers really don't think like people.
+# wouldn't it be easier if i could just move backwards in a tree rather than run it from the top every time? that'd be an attribute in each node. it'd have to be object_id cause otherwise it'd be recursive data.
+# but then i'd have to find out how to put that into each node. which means revisiting recursion, either build_tree or one of the depths. which basically means rewriting recursion.
+# optimize for mimimum lines of code, minimum data storage, minimum cycles, or minimum brainpower?
+# oh this is what infinifactory was about. i think i went for minimum cycles there.
+# this time i think i am going to minimize brainpower.
+
+
+# i think i like the look from the code side of keeping method results as instance variables, cleaner. but it's probably better to pass hashes cause it's easier to keep track.
+
+
+
+    b = tree.find(8)
+    a = b.left_child || b.right_child
+# this assigns the one that is not nil. why?
+    h = {"left" => "left", "right" => "right"}
+    a = h["left"] || h["right"]
+# assigns whichever is (not nil) condition first, seems.
+
+
+
+# delete when there's two children loops on itself. apparently can't just assign new children? why?
+# apparently it refers to itself as child. huh. so this needs to call itself.
+# good thing this recursion just worked. why? who knows.

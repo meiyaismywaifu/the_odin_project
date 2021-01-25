@@ -1,10 +1,16 @@
 class Tree
     attr_accessor :root # root is the root node, which is also the whole tree
 
+    # given. modified naming.
+    def pretty_print(node = @root, prefix = '', is_left = true)
+        pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
+        puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
+        pretty_print(node.left_child, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_child
+      end
+
     def initialize(array)
         @array = prepare(array)
-        @found = false
-        @near = "N/A"
+        @known = "N/A" # [find] -> [insert]. didn't want array output.
     end
 
     # instructions said to make build_tree do this,
@@ -41,24 +47,59 @@ class Tree
     def insert(value)
         check = find(value)
         unless check.is_a? Node
-            if @near > value
-                @near.left_child = Node.new(value)
-                p "#{value} now left_child of #{@near.value}."
-            elsif @near < value
-                @near.right_child = Node.new(value)
-                p "#{value} now right_child of #{@near.value}."
+            if @known > value
+                @known.left_child = Node.new(value)
+                p "#{value} now left_child of #{@known.value}."
+            elsif @known < value
+                @known.right_child = Node.new(value)
+                p "#{value} now right_child of #{@known.value}."
            end 
         else
             p "#{value} exists at #{check}."
         end
-        @near = "N/A"
+        @known = "N/A"
     end
+    
+    # the definition of "delete" is also spurious.
     def delete(value)
         check = find(value)
+        
         unless check.is_a? String
-            # no children : remove from parent
+            # no children : remove self from parent
+            if @known.left_child.nil? && @known.right_child.nil?
+                relation = find_parent(@known)
+                if relation["position"] == "left"
+                    relation["parent"].left_child = nil
+                elsif relation["position"] == "right"
+                    relation["parent"].right_child = nil
+                end
+
             # one child : replace self in parent with child
+            elsif @known.left_child.nil? || @known.right_child.nil?
+                relation = find_parent(@known)
+                child = @known.left_child || @known.right_child
+                # assigns whichever is (not nil) first, seems.
+                if relation["position"] == "left"
+                    relation["parent"].left_child = child
+                elsif relation["position"] == "right"
+                    relation["parent"].right_child = child
+                end
+
             # two children: replace self with next inorder
+            else
+                replace = @known
+                
+                array = inorder
+                successor_value = array[array.index(value)+1]
+                successor = find(successor_value)
+                delete(successor) # successor sees self as child otherwise
+
+                replace.value = successor.value
+                successor.left_child = replace.left_child
+                successor.right_child = replace.right_child
+            end
+
+            p "#{value} deleted."
         else
             p "#{value} does not exist in this tree."
         end
@@ -67,19 +108,43 @@ class Tree
     # finds node with given value
     # this is v2, see thinking[273~327] for original.
     # changed because these nodes are numbers, not arbitrary objects.
+    # accepts nodes. probably due to Comparable module.
     # returns node or error
     def find(value)
-        @near = @root
+        @known = @root
         hit = false; result = "#{value} not found"
         until hit == true
-            if @near == value
-                result = @near; hit = true
-            elsif @near.is_leaf?
+            if @known == value
+                result = @known; hit = true
+            elsif @known.is_leaf?
                 hit = true
-            elsif @near > value # [value < @near] doesn't work
-                @near = @near.left_child
-            elsif @near < value
-                @near = @near.right_child
+            elsif @known > value # [value < @known] doesn't work
+                @known = @known.left_child
+            elsif @known < value
+                @known = @known.right_child
+            end
+        end
+        return result
+    end
+
+    # identical to [find] except for the hit conditions. see [471].
+    # returns node or error
+    def find_parent(value)
+        parent = @root
+        hit = false, result = "parent searching error"
+        until hit == true
+            if parent.left_child == value
+                result = {"parent" => parent, "position" => "left"}
+                hit = true
+            elsif parent.right_child == value
+                result = {"parent" => parent, "position" => "right"}
+                hit = true
+            elsif parent.is_leaf?
+                hit = true
+            elsif parent > value
+                parent = parent.left_child
+            elsif parent < value
+                parent = parent.right_child
             end
         end
         return result
