@@ -105,7 +105,7 @@ class Tree
         end
     end
 
-    # finds node with given value
+    # finds node with given value. also accepts nodes.
     # this is v2, see thinking[273~327] for original.
     # changed because these nodes are numbers, not arbitrary objects.
     # accepts nodes. probably due to Comparable module.
@@ -116,6 +116,7 @@ class Tree
         until hit == true
             if @known == value
                 result = @known; hit = true
+
             elsif @known.is_leaf?
                 hit = true
             elsif @known > value # [value < @known] doesn't work
@@ -133,12 +134,13 @@ class Tree
         parent = @root
         hit = false, result = "parent searching error"
         until hit == true
-            if parent.left_child == value
-                result = {"parent" => parent, "position" => "left"}
+            if parent.left_child == value ###
+                result = {"parent" => parent, "position" => "left"} ###
                 hit = true
-            elsif parent.right_child == value
-                result = {"parent" => parent, "position" => "right"}
+            elsif parent.right_child == value ###
+                result = {"parent" => parent, "position" => "right"} ###
                 hit = true
+
             elsif parent.is_leaf?
                 hit = true
             elsif parent > value
@@ -152,10 +154,10 @@ class Tree
 
     # breadth-first level order
     # returns array
-    def level_order
+    def level_order(node = @root)
         result = []
         queue = []
-        queue << @root
+        queue << node
 
         until queue.empty?
             node = queue.shift
@@ -188,24 +190,74 @@ class Tree
         return result
     end
 
-    def height
-        # longest distance to leaf
+    # longest distance to leaf. accepts value or node.
+    # see [512-552] for original.
+    # returns integer
+    def height(value)
+        start = (value.is_a? Integer) ? find(value) : value
+        result = []
+        queue = []
+        queue << start
+
+        level = []
+        counter = 0
+
+        until queue.empty? && level.empty?
+            until queue.empty?
+                level << queue.shift
+            end
+            until level.empty?
+                result << counter
+                node = level.shift
+                queue << node.left_child << node.right_child
+            end
+            counter += 1
+            queue.compact!
+        end
+
+        height = result.max
+
+        return height
     end
 
-    def depth
-        # distance to root
+    # distance to root. accepts value or node.
+    # identical to [find] except for a counter
+    # returns integer. root = depth 0.
+    def depth(value)
+        @known = @root
+        hit = false; result = "#{value} not found"
+        count = 0; ###
+        until hit == true
+            if @known == value
+                result = @known; hit = true
+
+            elsif @known.is_leaf?
+                hit = true
+            elsif @known > value
+                count += 1 ###
+                @known = @known.left_child
+            elsif @known < value
+                count += 1 ###
+                @known = @known.right_child
+            end
+        end
+        return count ###
     end
 
+    # difference of left and right heights is not more than 1
+    # returns boolean
     def balanced?
-        # difference of left and right heights is not more than 1
+        left_height = height(@root.left_child)
+        right_height = height(@root.right_child)
+        return (left_height - right_height).abs <= 1
     end
 
+    # rebalances tree
+    # returns [build_tree], must be assigned to @root.
     def rebalance
-        # tree to array
-        # build_tree(array)
-        # no return?
-
-        # "Tip: You’ll want to create a level-order array of the tree before passing the array back into the #build_tree method."
-            # wouldn't i want an in-order?
+        array = level_order
+        @array = prepare(array)
+        p @array
+        return build_tree
     end
 end

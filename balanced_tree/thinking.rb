@@ -500,3 +500,79 @@
 # delete when there's two children loops on itself. apparently can't just assign new children? why?
 # apparently it refers to itself as child. huh. so this needs to call itself.
 # good thing this recursion just worked. why? who knows.
+
+
+
+# height and depth...
+# depth-first traversal that return.. the value of the node, and the distance so it can be compared..
+
+    # no, depth is easier. it seems to be [find] except with a counter and returns that counter.
+    # yeah, that's what it was.
+
+# can this be done without recursion?.. would rather do less of it.
+# seems like it could be done with level-order..?
+# actually wouldn't it be more intuitive with level-order?
+
+# the thing i had in mind:
+    def height(value)
+        start = find(value)
+        reference = level_order(start)
+
+        result = []
+        queue = []
+        queue << start
+
+        level = []
+        counter = 0
+
+        until queue.empty? && level.empty?
+            until queue.empty?
+                level << queue.shift
+            end
+            until level.empty?
+                result << counter
+                node = level.shift
+                queue << node.left_child << node.right_child
+            end
+            counter += 1
+            queue.compact!
+        end
+
+        max_index = result.find_index(result.max)
+        height = reference[max_index]
+
+        return height
+    end
+# these lines were unnecessary
+    reference = level_order(start)
+    # [...]
+    max_index = result.find_index(result.max)
+    height = reference[max_index]
+# this was the replacement
+    height = result.max
+# the whole thing there doesn't work properly, there's some other thing overlooked. but it aims at "finding the value of the node of greatest height from this node". which is not "find the height from this node".
+
+
+
+    def terntest(value)
+        answer = value.is_a? Integer ? "is integer" : "is not integer"
+        return answer
+    end
+# apparently can't use is_a? in ternary.
+# oh fixed it. put it in parantheses. well that was easy.
+
+
+
+# rebalance
+    # "Tip: You’ll want to create a level-order array of the tree before passing the array back into the #build_tree method."
+        # wouldn't i want an in-order?
+# yeah i don't see why i wouldn't use in-order.
+# well i have a different opinion now, the point is to get it into an array, but i don't see why what array matters, the point is to get an array, and sort it. in-order isn't better either since it only gives what it says it gives if the tree is balanced.
+# well, i'll use level-order because it's not recursive.
+
+# hmm? doesn't work.
+# [find] is complaining at [insert]:
+    # "undefined method `is_leaf?' for nil:NilClass (NoMethodError)"
+# only occasionally though.
+# rebalance doesn't rebalance. array is prepared. like it's not writing the results...? oh right, i have to set it to equal to root manually cause [build_tree] is recursive.
+# right, so final problem is in comparison to null class somewhere.
