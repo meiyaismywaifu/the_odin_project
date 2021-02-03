@@ -215,14 +215,18 @@ class Tree
     # returns integer. root = depth 0.
     def depth(value)
         @known = @root
-        hit = false; result = "#{value} not found"
+        hit = false
         count = 0; ###
         until hit == true
             if @known == value
-                result = @known; hit = true
+                hit = true
 
             elsif @known.is_leaf?
                 hit = true
+            elsif @known.nil?
+                count = "error: #{value} not found."
+                break
+
             elsif @known > value
                 count += 1 ###
                 @known = @known.left_child
