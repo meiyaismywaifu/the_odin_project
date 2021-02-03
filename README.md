@@ -13,4 +13,5 @@
 | Fibonacci     | [(upstream)](https://github.com/TheOdinProject/curriculum/blob/master/ruby_programming/computer_science/project_recursion.md) | [(downstream)](https://github.com/meiyaismywaifu/the_odin_project/blob/master/recursion/fibonacci.rb) |                                |
 | Merge Sort    | [(upstream)](https://github.com/TheOdinProject/curriculum/blob/master/ruby_programming/computer_science/project_recursion.md) | [(downstream)](https://github.com/meiyaismywaifu/the_odin_project/blob/master/recursion/merge_sort.rb) |                                |
 | Linked Lists  | [(upstream)](https://github.com/TheOdinProject/curriculum/blob/master/ruby_programming/computer_science/project_linked_lists.md) | [(downstream)](https://github.com/meiyaismywaifu/the_odin_project/tree/master/linked_lists) |                                |
+| Balanced Tree | [(upstream)](https://github.com/TheOdinProject/curriculum/blob/master/ruby_programming/computer_science/project_binary_search_trees.md) | [(downstream)](https://github.com/meiyaismywaifu/the_odin_project/tree/master/balanced_tree) |                                |
 
