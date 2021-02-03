@@ -10,19 +10,30 @@ class Tree
 
     def initialize(array)
         @array = prepare(array)
-        @known = "N/A"
+        @known = "N/A" # [find] -> [insert]. didn't want array output.
         @known_prev = "N/A"
     end
 
+    # instructions said to make build_tree do this,
+    # but since it's recursion it seemed wasteful.
     def prepare(array = @array)
         return array.uniq.sort
     end
 
-    # recursively builds tree
-    # returns root node, which contains entire tree
+    # build_tree(array)... block would be array length == 1?
+    #   if array length == 1                    [criteria]
+    #       return new node of this value       [block]
+    #   else
+    #       new node:                           [recursion]
+    #       value = middle
+    #       left_child = build_tree(<middle)
+    #       right_child = build_tree(>middle)
+    #       return node                         [final answer]
+    #   end
     def build_tree(array = @array)
         return Node.new(array[0]) if array.length == 1  # [two blocks]
         return Node.new(array[0],nil,Node.new(array[1])) if array.length == 2
+        # two blocks because [0..middle-1] on length 2 returns length 2.
 
         node = Node.new
         middle = (array.length-1)/2.floor               # [recursion]
@@ -34,7 +45,6 @@ class Tree
     
     # this name is full of shit. it's add(value).
     # it's only here because that's the project spec.
-    # returns console message.
     def insert(value)
         check = find(value)
 
@@ -55,7 +65,6 @@ class Tree
     end
     
     # the definition of "delete" is also spurious.
-    # returns console message.
     def delete(value)
         check = find(value)
         
@@ -101,11 +110,16 @@ class Tree
     end
 
     # finds node with given value. also accepts nodes.
-    # returns node or error(string)
+    # this is v2, see thinking[273~327] for original.
+    # changed because these nodes are numbers, not arbitrary objects.
+    # accepts nodes. probably due to Comparable module.
+    # returns node or error
     def find(value)
         @known = @root
         hit = false; result = "#{value} not found"
         until hit == true
+            p "known: #{@known}"
+            # p "known value: #{@known.value}"
             if @known == value
                 result = @known; hit = true
 
@@ -119,6 +133,7 @@ class Tree
                 @known = @known.right_child
             end
         end
+        p "known: #{@known}"
         return result
     end
 
@@ -185,13 +200,15 @@ class Tree
     end
 
     # longest distance to leaf. accepts value or node.
+    # see [512-552] for original.
     # returns integer
     def height(value)
-        start = (value.is_a? Integer) ? find(value) : value
+        start = (value.is_a? Integer) ? find(value) : value # converts to node if integer
         result = []
         queue = []; queue << start
         level = []; counter = 0
 
+        # creates array of heights. counter goes up each time a layer has been traversed.
         until queue.empty? && level.empty?
             until queue.empty?
                 level << queue.shift
@@ -247,6 +264,7 @@ class Tree
     def rebalance
         array = level_order
         @array = prepare(array)
+        p @array
         return build_tree
     end
 end

@@ -576,3 +576,11 @@
 # only occasionally though.
 # rebalance doesn't rebalance. array is prepared. like it's not writing the results...? oh right, i have to set it to equal to root manually cause [build_tree] is recursive.
 # right, so final problem is in comparison to null class somewhere.
+
+# [@known] is picking up a nil value. does it or doesn't it do this under balanced conditions?
+# doesn't seem to..?
+# error appears when attempting to go the other branch of a node that got a new branch...
+# no, it does appear in balanced state too. any time you attempt to go to a nil branch?..
+# ok that fixed [find]. now [insert], which aside from own problems needs to adjust to new [find] output...
+
+# well that was a hack. added a second attribute to track the "previous known". now there's even more overlap with [find_parent].
