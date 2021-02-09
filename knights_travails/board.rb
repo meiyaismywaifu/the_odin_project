@@ -38,7 +38,7 @@ class Board
                     paths = knight_next(current.position)
                     paths.each do |xy|
                         move = Node.new(xy,current.object_id)
-                        current.children << move
+                        current.children << move.object_id
                         queue << move
                     end
                 end
