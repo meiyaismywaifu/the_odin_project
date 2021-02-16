@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+  ### i still don't know what this means.
 
 # The 'all' matcher and the 'contain_exactly' matcher each look at every
 # item in 'numbers'.
@@ -56,6 +57,8 @@ describe String do
 
     it 'ends with the whole word' do
       expect(sample_word).to end_with('spaceship')
+      ### don't you think this is rather overindulgent
+      ### is this for the purposes of "i wrote this many lines of code today"
     end
   end
 end
@@ -79,10 +82,15 @@ describe Array do
   # Write a test that expresses each of the following statements.
 
   # remove the 'x' before running this test
-  xit 'includes 21 and ends with 89' do
+  it 'includes 21 and ends with 89' do
+    expect(fibonacci_sequence).to include 21
+    expect(fibonacci_sequence).to end_with 89
   end
 
   # remove the 'x' before running this test
-  xit 'starts with 0, 1, 1, 2 and all are under 100' do
+  it 'starts with 0, 1, 1, 2 and all are under 100' do
+    expect(fibonacci_sequence).to start_with([0,1,1,2])
+     expect(fibonacci_sequence).to all be < 100
+    #expect(fibonacci_sequence).to all(be < 100)
   end
 end

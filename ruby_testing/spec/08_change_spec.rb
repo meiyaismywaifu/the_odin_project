@@ -21,12 +21,14 @@ describe Array do
 
     it 'will change the length from 3 to 4' do
       expect { drinks << 'juice' }.to change { drinks.length }.from(3).to(4)
+      ### a "from" statement...
     end
 
     # The above two tests are too tightly coupled to a specific array length.
     # The test should instead be written for any length of array, for example:
     it 'will increase the length by one' do
       expect { drinks << 'juice' }.to change { drinks.length }.by(1)
+      ### by 1 != by -1
     end
 
     # There are additional ways to be more descriptive about the change.
@@ -55,15 +57,26 @@ describe 'lucky numbers with rotate! method' do
 
   context 'when rotating the array of lucky numbers' do
     # remove the 'x' before running this test
-    xit 'will change the first value to 7' do
+    it 'will change the first value to 7' do
+      # expect{lucky_numbers.rotate!}.to start_with(7) ### doesn't work
+      expect{ lucky_numbers.rotate! }.to change { lucky_numbers[0] }.to 7
+        ### "to 7" vs "to eql 7" difference? what's implied?
+        ### how come it works here anyway?
     end
 
     # remove the 'x' before running this test
-    xit 'will change the last value to 3' do
+    it 'will change the last value to 3' do
+      expect{ lucky_numbers.rotate! }.to change { lucky_numbers[-1] }.to 3
+        ### rotate bang lasts per test?
+        ### so you need both [!] and [change] in order to test changes? seems like it should just work with 
+        # expect{ lucky_numbers.rotate! }.to end_with 3
+        ### because the output of a rotate! is an array. but apparently not.
+        ### also this two space tab is hideous.
     end
 
     # remove the 'x' before running this test
-    xit 'will change the first value to 7 and last value to 3' do
+    it 'will change the first value to 7 and last value to 3' do
+      expect{ lucky_numbers.rotate! }.to change { lucky_numbers[0] }.to(7).and change { lucky_numbers[-1]}.to(3)
     end
   end
 end

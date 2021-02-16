@@ -5,6 +5,7 @@ describe Hash do
 
   # As you discovered in the last assignment, the include matcher works on any
   # object that would respond to the #include? method.
+    ### good thing you fuckin mentioned it cause i completely didn't notice
   # https://relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/include-matcher
   context 'when changing favorite color to forest green' do
     it 'includes green' do
@@ -53,17 +54,22 @@ describe Hash do
   end
 
   # remove the 'x' before running this test
-  xit 'is newer than 2015' do
+  it 'is newer than 2015' do
     # Write a test that verifies the above statement.
+    expect(my_car[:year]).to be > 2015
   end
 
   # remove the 'x' before running this test
-  xit 'has a parking camera' do
+  it 'has a parking camera' do
     # Write a test that verifies the above statement.
+    expect(my_car[:parking_camera?]).to be true
   end
 
   # remove the 'x' before running this test
-  xit 'does not have assisted steering' do
+  it 'does not have assisted steering' do
     # Write a test that verifies the above statement.
+    ### why would you get a car with cameras but without power steering?
+    ### are you retarded?
+    expect(my_car[:assisted_steering?]).to be false
   end
 end

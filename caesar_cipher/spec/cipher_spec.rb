@@ -1,11 +1,11 @@
 require './caesar_cipher.rb'
 
 describe Cipher do
-    subject { Cipher.new.caesar(text,shift) }
+    subject(:cipher) { Cipher.new.caesar(text,shift) }
 
     context "shift +1" do
         let(:text) {"example"}; let(:shift) {1}
-        it {should eql "fybnqmf"}
+        it { expect(cipher).to eql "fybnqmf"}
     end
 
     context "shift -2" do
