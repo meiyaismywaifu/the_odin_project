@@ -46,3 +46,11 @@
     # 'equal' checks for OBJECT IDENTITY.
     # 'be' checks for OBJECT IDENTITY.
 # eeeeee
+
+# i think i should be paying more attention to how describe/context/it is structured more than this other stuff being pointed at.
+
+
+# ...what is [respond_to]?
+
+
+# not sure i entirely grasp implications of "shared_examples".
