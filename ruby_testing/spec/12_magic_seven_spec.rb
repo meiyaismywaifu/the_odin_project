@@ -70,34 +70,62 @@ describe MagicSeven do
   # Write a test for each of the following methods:
 
   describe '#subtract_four' do
+    context "from 9" do
+      it "returns 5" do
+        arbitrary_number = 9
+        result = game.subtract_four(arbitrary_number)
+        expect(result).to eq 5
+      end
+    end
   end
 
   describe '#divide_by_two' do
+    context "when given 16" do
+      it "returns 8" do
+        previous_step = 16
+        result = game.divide_by_two(previous_step)
+        expect(result).to eq 8
+      end
+    end
   end
 
   # The following tests will need you to create new instances of MagicSeven with
   # a specific value for the random_number.
   describe '#subtract_random_number' do
+    it "returns the difference" do
+      random_second = MagicSeven.new.random_number
+      result = game.subtract_random_number(random_second)
+      expect(result).to eq(random_second - game.random_number)
+    end
   end
 
   # The #play method will always return seven! Test this game, using any
   # positive integer as the random_number. Update the context with the number.
   describe '#play' do
-    context 'when the random number is ...' do
+    context 'when the random number 9' do
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      it 'will return 7' do
+        game = MagicSeven.new(9)
+        result = game.play
+        expect(result).to eq 7
       end
     end
 
-    context 'when the random number is ...' do
+    context 'when the random number is 7' do
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      it 'will return 7' do
+        game = MagicSeven.new(7)
+        result = game.play
+        expect(result).to eq 7
       end
     end
 
-    context 'when the random number is ...' do
+    context 'when the random number is 2' do
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      it 'will return 7' do
+        game = MagicSeven.new(2)
+        result = game.play
+        expect(result).to eq 7
       end
     end
   end

@@ -48,10 +48,13 @@ describe NumberGame do
       # Write a similar test to the one above, that uses a custom matcher
       # instead of <, >, =.
       matcher :be_between_zero_and_nine do
+        match { |num| num >= 0 && num <= 9}
       end
 
       # remove the 'x' before running this test
-      xit 'is a number between 0 and 9' do
+      it 'is a number between 0 and 9' do
+        solution = game.solution
+        expect(solution).to be_between_zero_and_nine
       end
     end
   end
@@ -79,7 +82,10 @@ describe NumberGame do
     # does not equal @solution.
     context 'when user guess is not correct' do
       # remove the 'x' before running this test
-      xit 'is not game over' do
+
+      subject(:game_continue) { described_class.new(5, '6') }
+      it 'is not game over' do
+        expect(game_continue).to_not be_game_over
       end
     end
   end
@@ -107,10 +113,15 @@ describe NumberGame do
 
     # Write a test for the following context.
     context 'when given invalid input as argument' do
-      xit 'returns nil' do
+      it 'returns nil' do
+        user_input = "b"
+        verified_input = game_check.verify_input(user_input)
+        expect(verified_input).to eq nil
       end
     end
   end
+
+### ### giant difficulty spike line ### ###
 
   describe '#player_turn' do
     # In order to test the behavior of #player_turn, we need to use a method
@@ -131,9 +142,16 @@ describe NumberGame do
       it 'stops loop and does not display error message' do
         valid_input = '3'
         allow(game_loop).to receive(:player_input).and_return(valid_input)
+          ### pass [valid_input] to method [player_input] in [game_loop]
         # To use a message expectation, move 'Assert' before 'Act'.
+          ### what the fuck are you talking about?
         expect(game_loop).not_to receive(:puts).with('Input error!')
+          ### test: [game loop] should not return [puts] with ['Input error!']
+            ### is this the right reading? why the fuck is "receive" used in opposite manners?
+            ### when i change [valid_input] to ["b"] and change in expect either [not to] or ['Input error!'], rspec apparently gets stuck in the loop. is there a non-stupid explanation for this?
+              ### it's because the method [player_turn], called below, is a loop and won't stop calling itself until a valid input is given. the inverse of this test isn't as trivial as inverting its syntax on this level.
         game_loop.player_turn
+          ### what is the point of this line?
       end
     end
 
@@ -142,12 +160,16 @@ describe NumberGame do
       # separate the test from the set-up.
       # https://relishapp.com/rspec/rspec-core/v/2-0/docs/hooks/before-and-after-hooks\
       # https://www.tutorialspoint.com/rspec/rspec_hooks.htm
+        ### i'm not gonna fucking remember any of this. "read hundreds of words of official docuemntation for an entirely new concept every three lines of code!" no.
 
       before do
         # A method stub can be called multiple times and return different values.
         # https://relishapp.com/rspec/rspec-mocks/docs/configuring-responses/returning-a-value
         # This method stub for :player_input will return the invalid 'letter' input,
         # then it will return the 'valid_input'
+          ### THANK YOU! FUCK!
+          ### is it so hard or wrong to do this? "this is what this means"?
+
         letter = 'd'
         valid_input = '8'
         allow(game_loop).to receive(:player_input).and_return(letter, valid_input)
@@ -159,6 +181,10 @@ describe NumberGame do
       it 'completes loop and displays error message once' do
         expect(game_loop).to receive(:puts).with('Input error!').once
         game_loop.player_turn
+          ### fails when this is removed. why?
+          ### apparently this is what the earlier line meant?
+            # To use a message expectation, move 'Assert' before 'Act'.
+          ### .......?
       end
     end
 
@@ -166,10 +192,21 @@ describe NumberGame do
 
     # Write a test for the following context.
     context 'when user inputs two incorrect values, then a valid input' do
+      ### i am not going to remember this.
       before do
+        invalid_one = "b"
+        invalid_two = "c"
+        valid_input = "3"
+        allow(game_loop).to receive(:player_input).and_return(invalid_one, invalid_two, valid_input)
+          ### oh there's the obvious replacement.
+          ### it should be receive(:method).with(inputs).
+          ### oh, "with" is used elsewhere. isn't that unfortunate.
       end
 
-      xit 'completes loop and displays error message twice' do
+      it 'completes loop and displays error message twice' do
+        expect(game_loop).to receive(:puts).with('Input error!').twice
+        game_loop.player_turn
+        # i do not understand this at all, see thinking[82~].
       end
     end
   end
@@ -201,9 +238,10 @@ describe NumberGame do
     # @guess, and @count
     context 'when count is 2-3' do
       # remove the 'x' before running this test
-      xit 'outputs correct phrase' do
-        congrats_phrase = "Congratulations! You picked the random number in 3 guesses!\n"
-        expect { game.final_message }.to output(congrats_phrase).to_stdout
+      subject(:game_two) { described_class.new(5, "5", 3) }
+      it 'outputs correct phrase' do
+        congrats_phrase = "Congratulations! You picked the random number in 3 guesses!\n" ### so you mean the count is exactly 3
+        expect { game_two.final_message }.to output(congrats_phrase).to_stdout
       end
     end
 
@@ -211,8 +249,11 @@ describe NumberGame do
 
     # Write a test for the following context.
     context 'when count is 4 and over' do
+      subject(:game_three) { described_class.new(5, "5", 5)}
       # remove the 'x' before running this test
-      xit 'outputs correct phrase' do
+      it 'outputs correct phrase' do
+        hard_phrase = "That was hard. It took you 5 guesses!\n"
+        expect { game_three.final_message }.to output(hard_phrase).to_stdout
       end
     end
   end
