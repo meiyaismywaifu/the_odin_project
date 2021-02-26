@@ -126,3 +126,100 @@
     # Note: the 'RandomNumber' class has not been written. During TDD, we will need
     # to create a double for RandomNumber in the tests for FindNumber.
 # ...? so double any object [...] that you intend to write, right? imagine doubling a [puts]. well, i will assume what makes sense.
+
+    name = double("comment", :foo => 1)
+    allow(name).to receive(:bar) { 2 }
+    expect(name.foo).to eq 1
+    expect(name.bar).to eq 2
+# "'double` is not available on an example group (e.g. a `describe` or `context` block). It is only available from within individual examples (e.g. `it` blocks) or from constructs that run in the scope of an example (e.g. `before`, `let`, etc)."
+
+
+# 15
+# what is "before" for again?
+    # "RSpec will call (execute) this block before each one of the tests (examples):"
+# versus let..?
+    # "RSpec comes with another feature to help with this: the method let allows us to define such bits of data (or more precisely, objects) that need to be specified per context. Here’s how that looks like:"
+# .......
+# oh here's the one i was looking for. lucky me. no thanks to the garbage arrangement of the thing itself. 13 [159]:
+    # As the 'Arrange' step for tests grows, you can use a before hook to
+    # separate the test from the set-up.
+    # https://relishapp.com/rspec/rspec-core/v/2-0/docs/hooks/before-and-after-hooks\
+    # https://www.tutorialspoint.com/rspec/rspec_hooks.htm
+        ### i'm not gonna fucking remember any of this. "read hundreds of words of official docuemntation for an entirely new concept every three lines of code!" no.
+# so is [before] with no specification a [before(:each)] or a [before(:all)]? what's a "before suite"? oh no explanation.
+
+    describe do
+        subject(:stuff)
+        before do
+            thing = a
+        end
+        context do
+            it do
+                expect(stuff.method(thing)).to eq something_else
+            end
+        end
+    end
+# apparently [thing] is not defined here.
+# this is so tiresome.
+        before do
+            let(:thing) { a }
+        end
+    # "`let` is not available from within an example (e.g. an `it` block) or from constructs that run in the scope of an example (e.g. `before`, `let`, etc). It is only available on an example group (e.g. a `describe` or `context` block)."
+# running in circles already.
+# i can't put arbitrary puts in RSPEC. how annoying.
+# so here in [verify_input] it has to be an integer, but previously in [player_input] it has to be a string. how asinine. if you're keeping track of all this stuff anyway you might as well do it manually.
+# well found what to do here at least.
+    describe do
+        subject(:stuff)
+        let(:thing) { a }
+        context do
+            it do
+                expect(stuff.method(thing)).to eq something_else
+            end
+        end
+    end
+
+# #update_random_number:
+  before do
+    allow(game_update).to receive(:puts)
+    new_number = 76
+    allow(game_update).to receive(:player_input).with(1, 100).and_return(new_number)
+  end
+# what the fuck is this? a receive with nothing, and then a receive with two commands?
+# like okay, chaining works as long as it's passed the right type of object, but what the fuck is being passed between these? like we already know that [expect().to receive] does something entirely different to [expect().to eq]. or maybe it's not BUT NO ONE IS EXPLAINING IT.
+# i expect the first to be nil, but don't know why it's there.
+        # [allow(subject).receive(method).and_return(input)]
+    # is a mock method: it passes [input] to [subject] when it calls [method], instead of actually calling [method].
+# okay... and... [.and_return(new_number)] makes the line return [new_number]....?
+  it 'sends update_value to random_number' do
+    expect(random_update).to receive(:update_value).with(76)
+    game_update.update_random_number
+  end
+# ......
+# ...
+    allow(game_update).to receive(:puts)
+# this removes the puts from the RSPEC output.
+    expect(random_update).to receive(:update_value).with(76)
+# this is the thing we want to happen. "Assert". what a wrong name.
+    game_update.update_random_number
+# this is not executed "before"
+    allow(game_update).to receive(:player_input).with(1, 100).and_return(new_number)
+# which should just the same line except extended and put somewhere else.
+# allow(instance) to substitute any calls to (:player_input) with (1, 100) and instead of calling (:player_input), return the value assigned at (new_number)
+# that would be nice. if that's what it meant. i have no idea if that's what it means because It's That Easy [link to some documentation].
+# i feel like ive been here before. i'm clearly not catching on.
+
+# #create_binary_search:
+    subject(:game_create) { described_class.new(1, 10, number_create) }
+    let(:number_create) { instance_double(RandomNumber) }
+
+    it 'creates a new BinarySearch with RandomNumber double' do
+        expect(BinarySearch).to receive(:new).with(1, 10, number_create)
+        game_create.create_binary_search
+    end
+# ...
+        # [expect(subject).receive(method).with(message)]
+    # is... who knows what: it executes [subject] and expects the execution of [method] to return [message].
+# ....
+# BinarySearch is a class. a class that is referred to directly by name (capitalized). this is the first time we are seeing something like this. why?
+# actually, fuck it. even outside of this problem it doesn't line up with what we thought this syntax meant. expect/receive/with should be testing an output. here it is expecting (new) to output its inputs. which is not my understanding of what happens.

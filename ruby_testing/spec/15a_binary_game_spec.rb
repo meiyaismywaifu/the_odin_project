@@ -76,6 +76,7 @@ require_relative '../lib/15c_random_number'
 # coverage in public methods. However, as previously discussed, you may have
 # some private methods that are called inside a script or looping script method;
 # these methods should be tested publicly.
+  ### ......so, test everything, is what this says.
 
 # Open the file lib/15a_binary_game in a split screen, so you can see both
 # files at the same time. We will look at every method and determine if it will
@@ -89,6 +90,7 @@ describe BinaryGame do
   describe '#play_game' do
     # Public Script Method -> No test necessary, but all methods inside should
     # be tested.
+      ### oic
   end
 
   describe '#player_input' do
@@ -127,12 +129,21 @@ describe BinaryGame do
 
     # Remember that a stub can be called multiple times and return different values.
     # https://relishapp.com/rspec/rspec-mocks/docs/configuring-responses/returning-a-value
+      ### telling me to remember when the entire structure of all this stuff is the opposite of what helps remember things is- oh, it's an admission. right.
 
     context 'when user inputs an incorrect value once, then a valid input' do
       before do
+        invalid_input = "a"
+        valid_input = "3"
+        allow(game_input).to receive(:gets).and_return(invalid_input, valid_input)
       end
 
-      xit 'completes loop and displays error message once' do
+      it 'completes loop and displays error message once' do
+        min = game_input.instance_variable_get(:@minimum)
+        max = game_input.instance_variable_get(:@maximum)
+        error_message = "Input error! Please enter a number between #{min} or #{max}."
+        expect(game_input).to receive(:puts).with(error_message).once
+        game_input.player_input(min, max)
       end
     end
 
@@ -140,7 +151,16 @@ describe BinaryGame do
       before do
       end
 
-      xit 'completes loop and displays error message twice' do
+      it 'completes loop and displays error message twice' do
+        invalid_one = "a"
+        invalid_two = "b"
+        valid = "3"
+        allow(game_input).to receive(:gets).and_return(invalid_one, invalid_two, valid)
+        min = game_input.instance_variable_get(:@minimum)
+        max = game_input.instance_variable_get(:@maximum)
+        error_message = "Input error! Please enter a number between #{min} or #{max}."
+        expect(game_input).to receive(:puts).with(error_message).twice
+        game_input.player_input(min, max)
       end
     end
   end
@@ -155,13 +175,23 @@ describe BinaryGame do
 
     # Note: #verify_input will only return a number if it is between?(min, max)
 
+    subject(:game) { described_class.new(1, 10) }
+      ### i really don't see why this shouldn't just be called "game" since it's just the class. if [subject] were the method, which i don't remember seeing why it shouldn't, then calling it [player_input] or [verify_input] is sensible, but calling it [:verify_input] here to say [verify_input.verify_input] later sounds retarded.
+
+    let(:min) { game.instance_variable_get(:@minimum) }
+    let(:max) { game.instance_variable_get(:@maximum) }
+
     context 'when given a valid input as argument' do
-      xit 'returns valid input' do
+      it 'returns valid input' do
+        valid_input = 3
+        expect(game.verify_input(min, max, valid_input)).to eq valid_input
       end
     end
 
     context 'when given invalid input as argument' do
-      xit 'returns nil' do
+      it 'returns nil' do
+        valid_input = 12 ### this actually tests for integers only. presumably lib's [30] regex is an integer tester? i can't read regex. and this thing refuses to specify. probably because It's That Easy [link to some documentation].
+        expect(game.verify_input(min, max, valid_input)).to eq nil
       end
     end
   end
@@ -184,11 +214,19 @@ describe BinaryGame do
 
     context 'when updating value of random number' do
       # Instead of using a normal double, as we did in TDD, we are going to
-      # use an instance_double. An instance_double is a verifying double that
+      # use an instance_double.
+        ### wow.
+      # An instance_double is a verifying double that
       # will produce an error if any methods being stubbed does not exist in
       # the actual class. In this way, using a verifying double makes a test
       # more stable.
       # https://relishapp.com/rspec/rspec-mocks/v/3-9/docs/verifying-doubles
+        ### ............
+          ### "No checking will happen if the underlying object or class is not defined, but when run with
+          ### it present (either as a full spec run or by explicitly preloading c##ollaborators) a failure will be
+          ### triggered if an invalid method is being stubbed or a method is called with a##n invalid
+          ### number of arguments.""
+        ### oh that's pretty cool then. why didn't we just use these?
 
       # Unit testing relies on using doubles to test the object in isolation
       # (i.e., not dependent on any other object). One important concept to
@@ -201,6 +239,7 @@ describe BinaryGame do
       # Below (commented out) is the previous normal 'random_number' object
       # used in TDD. Compare it to the new verifying instance_double for the
       # RandomNumber class.
+        ### thank you. exactly the kind of thing i want.
       # let(:random_number) { double('random_number', value: 8) }
       let(:random_update) { instance_double(RandomNumber, value: 3) }
       subject(:game_update) { described_class.new(1, 100, random_update) }
@@ -251,7 +290,10 @@ describe BinaryGame do
 
     # Write a test for the following context.
     context 'when game minimum and maximum is 100 and 600' do
-      xit 'returns 9' do
+      subject(:game_five_hundred) { described_class.new(100, 600) }
+      it 'returns 9' do
+        max = game_five_hundred.maximum_guesses
+        expect(max).to eq 9
       end
     end
   end
@@ -269,6 +311,7 @@ describe BinaryGame do
       expect(BinarySearch).to receive(:new).with(1, 10, number_create)
       game_create.create_binary_search
     end
+      ### moved most commenting to thinking cause this is all too stupid.
   end
 
   describe '#display_binary_search' do
@@ -309,12 +352,18 @@ describe BinaryGame do
 
     # Write a test for the following context.
     context 'when game_over? is false five times' do
-      xit 'calls display_turn_order five times' do
+      it 'calls display_turn_order five times' do
+        # array = [false, false, false, false, false, true] ### can't feed array
+        allow(search_display).to receive(:game_over?).and_return(false, false, false, false, false, true)
+        expect(game_display).to receive(:display_turn_order).with(search_display).exactly(5).times
+        game_display.display_binary_search(search_display)
       end
     end
   end
 
   # ASSIGNMENT #5
+
+  ### --- wip line ---
 
   # Write three tests for the following method.
   describe '#display_turn_order' do
