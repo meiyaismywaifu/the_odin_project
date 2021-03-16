@@ -7,6 +7,8 @@
 
 # class for computer to find random number
 class BinaryGame
+  attr_reader :guess_count
+
   def initialize(minimum, maximum, random_number = RandomNumber.new(minimum, maximum))
     @minimum = minimum
     @maximum = maximum

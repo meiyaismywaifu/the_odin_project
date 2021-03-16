@@ -363,29 +363,43 @@ describe BinaryGame do
 
   # ASSIGNMENT #5
 
-  ### --- wip line ---
+  ### huge time gap between above and below.
 
   # Write three tests for the following method.
   describe '#display_turn_order' do
     # This method is a Looping Script Method. In #display_binary_search,
     # #display_turn_order will loop until binary_search.game_over?
+      ### ...what? this is the same reason given in [323]. DTO isn't a loop.
 
     # Create a new subject and an instance_double for BinarySearch.
+      ### subject is this class. BinarySearch is a different class.
+    subject(:turn_display) { described_class.new(1, 10) }
+    let(:search) { instance_double(BinarySearch) }
+      ### first is 2nd level, refers to top level. second from require_relative.
 
     before do
       # You'll need to create a few method stubs.
+      allow(search).to receive(:make_guess)
+      allow(search).to receive(:update_range)
+      allow(turn_display).to receive(:display_guess)
     end
 
     # Command Method -> Test the change in the observable state
-    xit 'increases guess_count by one' do
+    it 'increases guess_count by one' do
+      turn_display.display_turn_order(search)
+      expect(turn_display.guess_count).to eq 1
     end
 
     # Method with Outgoing Command -> Test that a message is sent
-    xit 'sends make_guess' do
+    it 'sends make_guess' do
+      expect(search).to receive(:make_guess)
+      turn_display.display_turn_order(search)
     end
 
     # Method with Outgoing Command -> Test that a message is sent
-    xit 'sends update_range' do
+    it 'sends update_range' do
+      expect(search).to receive(:update_range)
+      turn_display.display_turn_order(search)
     end
 
     # Using method expectations can be confusing. Stubbing the methods above

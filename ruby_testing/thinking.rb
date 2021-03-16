@@ -223,3 +223,25 @@
 # ....
 # BinarySearch is a class. a class that is referred to directly by name (capitalized). this is the first time we are seeing something like this. why?
 # actually, fuck it. even outside of this problem it doesn't line up with what we thought this syntax meant. expect/receive/with should be testing an output. here it is expecting (new) to output its inputs. which is not my understanding of what happens.
+
+
+# 15 round 2
+# it's been some time. i don't remember anything.
+# #display_turn_order
+# these instructions are clearly bad. i remember loop examples only test end conditions, and this isn't a loop anyway.
+# "command" and "outgoing". can i get it working by looking at the same labels?
+# "before" is for organization purposes, except it also has some other fiddly stuff which i believe we never figured out. "method stubs" should mean stuff we put in place so we only execute the method being tested.
+# "command" seems to be the simple type. no examples, plus seems intuitive.
+# "outgoing command" seems to be message expectations.
+    # expect [Class?] to receive [method] with [thing we would expect]
+    # execute method
+# @guess_count has no attr_reader... i feel like i ran into this before, but i dont remember the solution.
+    expect(search).to receive(:make_guess).with(no_args)
+    ### with what? there's no arguments.
+    ### google gods say some guy's blog says "with(no_args)" is a thing.
+    turn_display.display_turn_order(search)
+# apparently you can just omit the "with(no_args)" completely and it works? maybe?
+    allow(turn_display).to receive(:display_guess)
+# breaks without this? hm?
+# without a mock/stub/whatever, the real display_guess gets called on the fake binary_search. i see.
+# i don't see how we retrieve guess_count without attr_reader or something stupid like retrieving it from display_guess's console output. so it's either putting it in the thing itself, or refusing to do the test. i suppose we'll do the former.
